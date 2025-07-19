@@ -1,0 +1,28 @@
+class Solution {
+    public int strStr(String haystack, String needle) {
+        char st=needle.charAt(0);
+        int n=haystack.length(),m=needle.length(),flag=0;
+        if(m>n) return -1;
+        for(int k=0;k<=n-m;k++){
+            if(haystack.charAt(k)==st){
+                int i=k;
+                int j=0,len=i+m,ans=i;
+                while(i<len && j<m){
+                    char ch=needle.charAt(j);
+                    if(ch!=haystack.charAt(i)){
+                        flag=0;
+                        break;
+                    }
+                    else{
+                        flag=1;
+                    }
+                    i++;j++;
+                }
+                if(flag==1){
+                    return ans;
+                }
+            }
+        }
+        return -1;
+    }
+}
