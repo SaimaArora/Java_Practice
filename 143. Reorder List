@@ -1,0 +1,26 @@
+class Solution {
+    public void reorderList(ListNode head) {
+        ListNode slow=head,fast=head;
+        while(fast!=null && fast.next!=null){
+            slow=slow.next;
+            fast=fast.next.next;
+        }
+        ListNode curr=slow.next,prev=null;
+        slow.next=null;
+        while(curr!=null){
+            ListNode Next=curr.next;
+            curr.next=prev;
+            prev=curr;
+            curr=Next;
+        }
+        ListNode revh=prev,first=head;
+        while(revh!=null){
+            ListNode temp1=first.next,temp2=revh.next;
+            first.next=revh;
+            revh.next=temp1;
+            revh=temp2;
+            first=temp1;
+        }
+
+    }
+}
