@@ -1,0 +1,21 @@
+class Solution {
+    public int findLHS(int[] nums) {
+        HashMap<Integer,Integer> frequency=new HashMap<>();
+        int ans=0;
+        for(int num:nums){
+            if(!frequency.containsKey(num)){
+                frequency.put(num,0);
+            }
+            frequency.put(num,frequency.get(num)+1);
+        }
+        for(int minNum:frequency.keySet()){
+            if(frequency.containsKey(minNum+1)){
+                int length=frequency.get(minNum)+frequency.get(minNum+1);
+                if(length>ans){
+                    ans=length;
+                }
+            }
+        }
+        return ans;
+    }
+}
