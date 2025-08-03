@@ -1,0 +1,17 @@
+class Solution {
+    public int maximumScore(int[] nums, int k) {
+        int n=nums.length,minEle=nums[k];
+        int left=k,right=k,ans=nums[k];
+        while(left>0 || right<n-1){
+            if(left>0 && (right==n-1  || nums[left-1]>=nums[right+1])){
+                left--;
+            }
+            else {right++;}
+            minEle=Math.min(minEle,Math.min(nums[right],nums[left]));
+            int currResult=minEle*(right-left+1);
+            ans=Math.max(ans,currResult);
+            
+        }
+        return ans;
+    }
+}
