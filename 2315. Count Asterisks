@@ -1,0 +1,29 @@
+class Solution {
+    public int countAsterisks(String s) {
+        boolean inside = false;
+        int n = s.length(), i = 0, answer = 0;
+
+        while (i < n) {
+            char ch = s.charAt(i);
+            if (ch == '|' && inside == true) {
+                inside = false;
+                i++; 
+                while (i < n && s.charAt(i) != '|') {
+                    if (s.charAt(i) == '*') answer++;
+                    i++;
+                }
+                if (i < n && s.charAt(i) == '|') {
+                    inside = true;
+                }
+            } else if (ch == '|' && inside == false) {
+                inside = true;
+            }
+            if(inside==false){
+                if(ch=='*') answer++;
+            }
+            i++;
+        }
+
+        return answer;
+    }
+}
