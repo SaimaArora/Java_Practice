@@ -1,0 +1,25 @@
+public boolean isNStraightHand(int[] hand, int groupSize) {
+        PriorityQueue<Integer> sorted=new PriorityQueue<>();
+        HashMap<Integer,Integer> freq=new HashMap<>();
+        int n=hand.length;
+        for(int i=0;i<n;i++){
+            freq.put(hand[i],freq.getOrDefault(hand[i],0)+1);
+        }
+        for(int keys:freq.keySet()){
+            sorted.offer(keys);
+        }
+        while(!sorted.isEmpty()){
+            int min=sorted.peek();
+            if(freq.get(min)==0){
+                sorted.poll();
+                continue;
+            }
+            int count=freq.get(min);
+            for(int i=0;i<groupSize;i++){
+                int curr=freq.getOrDefault(min+i,0);
+                if(curr<count) return false;
+                freq.put(min+i,curr-count);
+            }
+        }
+        return true;
+    }
