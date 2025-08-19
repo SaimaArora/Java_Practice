@@ -1,0 +1,42 @@
+public int calcDays(int[] bloom,int day,int m, int k){
+        int n=bloom.length,streak=0;
+        int answer=0;
+        for(int i=0;i<n;i++){
+            if(bloom[i]<=day){
+                streak++;
+            }
+            else{
+                int bouquet=streak/k;
+                answer+=bouquet;
+                streak=0;
+            }
+        }
+        answer+=streak/k;
+        return answer;
+    }
+    public int minDays(int[] bloom, int m, int k) {
+        int minDay=bloom[0],maxDay=bloom[0];
+        for(int day : bloom) {
+            if(day>maxDay){
+                maxDay = day;
+            }
+            if(day<minDay) {
+                minDay= day;
+            }
+        }
+        int lower=minDay,upper=maxDay;
+        int result=-1;
+        while(lower<=upper){
+            int mid=lower+(upper-lower)/2;
+            int answer=calcDays(bloom,mid,m,k);
+            
+            if(answer>=m) {
+                result=mid;
+                upper=mid-1;
+            }
+            else{
+                lower=mid+1;
+            }
+        }
+        return result;
+    }
