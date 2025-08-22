@@ -1,0 +1,102 @@
+class AllOne {
+
+    class Node {
+        int countVal;
+        HashSet<String> setStr;
+        Node prev;
+        Node next;
+
+        Node(int val) {
+            countVal=val;
+            prev=null;
+            next=null;
+            setStr=new HashSet<>();
+        }
+    }
+
+    HashMap<String,Node> location;
+    Node head;
+    Node tail;
+
+    public AllOne() {
+        head=new Node(0);
+        tail=new Node(0);
+        location=new HashMap<>();
+        head.next=tail;
+        head.prev=null;
+        tail.prev=head;
+        tail.next=null;
+    }
+
+    public void inc(String key) {
+        Node node;
+        if (location.containsKey(key)) {
+            Node last=location.get(key);
+            int newFreq = last.countVal + 1;
+            if(last.next.countVal == newFreq) {
+                node=last.next;
+            } else {
+                node=createNode(newFreq,last,last.next);
+            }
+            last.setStr.remove(key);
+            if(last.setStr.isEmpty()) {
+                deleteNode(last);
+            }
+        } else {
+            if(head.next.countVal==1){
+                node=head.next;
+            } else{
+                node = createNode(1,head,head.next);
+            }
+        }
+        node.setStr.add(key);
+        location.put(key,node);
+    }
+    
+    private Node createNode(int val, Node preNode, Node nextNode) {
+        Node newNode=new Node(val);
+        newNode.prev=preNode;
+        newNode.next=nextNode;
+        preNode.next=newNode;
+        nextNode.prev=newNode;
+        return newNode;
+    }
+
+    private void deleteNode(Node last) {
+        last.prev.next=last.next;
+        last.next.prev=last.prev;
+    }
+
+    public void dec(String key) {
+        Node node;
+        if (location.containsKey(key)) {
+            Node curr=location.get(key);
+            int newFreq=curr.countVal-1;
+            if(newFreq == 0){ //remove it
+                location.remove(key);
+            } else { //non zero freq
+                if(curr.prev.countVal == newFreq) {
+                    node=curr.prev;
+                } else {
+                    node = createNode(newFreq,curr.prev,curr);
+                }
+                location.put(key,node);
+                node.setStr.add(key);
+            }
+            curr.setStr.remove(key);
+            if(curr.setStr.isEmpty()){
+                deleteNode(curr);
+            }
+        }
+    }
+    
+    public String getMaxKey() {
+        String[] str = tail.prev.setStr.toArray(new String[0]);
+        return (str.length==0)?"":str[0];
+    }
+    
+    public String getMinKey() {
+        String[] str = head.next.setStr.toArray(new String[0]);
+        return (str.length==0)?"":str[0];
+    }
+}
