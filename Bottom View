@@ -1,0 +1,29 @@
+public List<Integer> bottomView(Node root) {
+
+  Map<Integer,Integer> levels=new TreeMap<>();
+  List<Integer> result=new ArrayList<>();
+  if(root==null){
+    return result;
+  }
+  
+  Queue<Record> queue=new LinkedList<>();
+  queue.add(new Record(root,0));
+  while (!queue.isEmpty()){
+    Record rec=queue.poll();
+    int levRec=rec.val;
+    Node recNode=rec.node;
+    levels.put(levRec,recNode.data);
+    if(recNode.left!=null){
+    queue.offer(new Record(recNode.left,levRec-1));
+    }
+    if(recNode.right!=null){
+    queue.offer(new Record(recNode.right,levRec+1));
+    }
+  }
+  for(int value: levels.values()){
+  result.add(value);
+  }
+
+return result;
+
+}
