@@ -1,0 +1,47 @@
+class Solution {
+    public int recursive(int[][] grid,int i,int j){
+        if(i==0 && j==0) return grid[0][0];
+        if(i<0 || j<0) return (int) Math.pow(10, 9);
+        int up=grid[i][j]+recursive(grid,i-1,j);
+        int left=grid[i][j]+recursive(grid,i,j-1);
+        return Math.min(up,left);
+    }
+
+    public int memoized(int[][] grid,int[][] dp, int i, int j){
+        if(i==0 && j==0) return grid[0][0];
+        if(i<0 || j< 0) return (int) Math.pow(10, 9);
+        if(dp[i][j]!=-1) return dp[i][j];
+        int up=grid[i][j]+memoized(grid,dp,i-1,j);
+        int left=grid[i][j]+memoized(grid,dp,i,j-1);
+        return dp[i][j]=Math.min(up,left);
+    }
+
+    public int tabulation(int[][] grid,int m,int n){
+        int[][] dp=new int[m][n];
+        dp[0][0]=grid[0][0];
+        for(int i=0;i<m;i++){
+            for(int j=0;j<n;j++){
+                if(i==0 && j==0) continue;
+                int up=grid[i][j];
+                if(i>0) up+=dp[i-1][j];
+                else up += (int) Math.pow(10, 9);
+                int left=grid[i][j];
+                if(j>0) left+=dp[i][j-1];
+                else left+=(int) Math.pow(10,9);
+                dp[i][j]=Math.min(up,left);
+            }
+        }
+        return dp[m-1][n-1];
+
+    }
+
+    public int minPathSum(int[][] grid) {
+        int m=grid.length,n=grid[0].length;
+        int[][] dp=new int[m][n];
+        for(int[] row:dp){
+            Arrays.fill(row,-1);
+        }
+        // return memoized(grid,dp,m-1,n-1);
+        return tabulation(grid,m,n);
+    }
+}
