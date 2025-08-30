@@ -1,0 +1,79 @@
+class Solution {
+
+    public int tabulation(int[][] mat){
+        int m=mat.length,n=mat[0].length,minAns=Integer.MAX_VALUE;
+        int [][] dp=new int[m][n];
+        for(int i=0;i<n;i++){
+            dp[0][i]=mat[0][i];
+        }
+        for(int r=1;r<m;r++){
+            for(int c=0;c<n;c++){
+                int up=(int)Math.pow(10,9),leftUp=(int)Math.pow(10,9),rightUp=(int)Math.pow(10,9);
+                if(r>0){
+                    up=dp[r-1][c];
+                }
+                if(r>0 && c>0){
+                    leftUp=dp[r-1][c-1];
+                }
+                if(c<n-1 && r>0){
+                    rightUp=dp[r-1][c+1];
+                }
+                minAns=mat[r][c]+Math.min(up,Math.min(leftUp,rightUp));
+                dp[r][c]=minAns;
+            }
+        }
+        minAns=Integer.MAX_VALUE;
+        for(int i=0;i<n;i++){
+            minAns=Math.min(minAns,dp[m-1][i]);
+        }
+        return minAns;
+    }
+
+
+
+    public int memoized(int[][] mat,int[][] dp, int r,int c,int m,int n) {
+        if(r<0 || c<0 || c>=n){
+            return (int)Math.pow(10,9);
+        }
+        if(r==0){
+            return mat[0][c];
+        }
+        if(dp[r][c]!=Integer.MAX_VALUE){
+            return dp[r][c];
+        }
+        int up=recursive(mat,r-1,c,m,n);
+        int leftUp=recursive(mat,r-1,c-1,m,n);
+        int rightUp=recursive(mat,r-1,c+1,m,n);
+        return dp[r][c]=mat[r][c] + Math.min(up,Math.min(leftUp,rightUp));
+    }
+
+    public int recursive(int[][] mat,int r,int c,int m,int n) {
+        if(r<0 || c<0 || c>=n){
+            return (int)Math.pow(10,9);
+        }
+        if(r==0 && c<n && c>=0){
+            return mat[r][c];
+        }
+        int up=recursive(mat,r-1,c,m,n);
+        int leftUp=recursive(mat,r-1,c-1,m,n);
+        int rightUp=recursive(mat,r-1,c+1,m,n);
+        return mat[r][c] + Math.min(up,Math.min(leftUp,rightUp));
+    }
+
+    public int minFallingPathSum(int[][] matrix) {
+        int n=matrix[0].length,minAns=Integer.MAX_VALUE,len=matrix.length;
+        // for(int i=0;i<n;i++){
+        //    minAns=Math.min(minAns,recursive(matrix,len-1,i,len,n));
+        // }
+        // return minAns;
+
+        // int dp[][] = new int[len][n];
+        // for(int i=0;i<len;i++){
+        //     Arrays.fill(dp[i],Integer.MAX_VALUE);
+        // }
+        // for(int i=0;i<n;i++){
+        //    minAns=Math.min(minAns,memoized(matrix,dp,len-1,i,len,n));
+        // }
+        return tabulation(matrix);
+    }
+}
