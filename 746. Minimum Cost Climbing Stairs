@@ -1,0 +1,33 @@
+class Solution {
+
+    public int recursive(int[] cost,int st,int n) {
+        if(st>=n){
+            return 0;
+        }
+        if(st==n-1){
+            return cost[st];
+        }
+        int one=recursive(cost,st+1,n);
+        int two=recursive(cost,st+2,n);
+        return cost[st]+Math.min(one,two);
+    }
+
+    public int memoized(int[] cost,int[]dp,int st,int n){
+        if(st>=n) return 0;
+        if(st==n-1) return cost[st];
+        if(dp[st]!=-1) return dp[st];
+        int one=memoized(cost,dp,st+1,n);
+        int two=memoized(cost,dp,st+2,n);
+        return dp[st]=cost[st]+Math.min(one,two);
+    }
+
+    public int minCostClimbingStairs(int[] cost) {
+        int n=cost.length;
+        int[] dp=new int[n];
+        Arrays.fill(dp,-1);
+        int zeroth = memoized(cost,dp,0,n);
+        Arrays.fill(dp,-1);
+        int first = memoized(cost,dp,1,n);
+        return Math.min(zeroth,first);
+    }
+}
