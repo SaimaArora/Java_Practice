@@ -1,0 +1,86 @@
+class LRUCache {
+    class Node{
+        int key;
+        int value;
+        Node next;
+        Node prev;
+
+        Node(int key,int val){
+            this.key=key;
+            this.value=val;
+        }
+    }
+    Map<Integer,Node> location;
+    Node head;
+    Node tail;
+    int size;
+    int currSize;
+    public LRUCache(int capacity) {
+        size=capacity;
+        head=new Node(-1,-1);
+        tail=new Node(-1,-1);
+        head.next=tail;
+        tail.prev=head;
+        currSize=0;
+        location=new HashMap<>();
+    }
+    
+    private void putInFront(Node curr){
+        Node first=head.next;
+        first.prev=curr;
+        curr.next=first;
+        curr.prev=head;
+        head.next=curr;
+    }
+
+    private void deleteNode(Node curr){
+        curr.prev.next=curr.next;
+        curr.next.prev=curr.prev;
+    }
+    private void markAsFirst(Node curr){
+        deleteNode(curr);
+        putInFront(curr);
+    }
+
+    public int get(int key) {
+        if(!location.containsKey(key)){
+            return -1;
+        }
+        Node curr=location.get(key);
+        markAsFirst(curr);
+        return curr.value;
+    }
+    
+    private void deleteLeastRecentlyUsed(){
+        location.remove(tail.prev.key);
+        deleteNode(tail.prev);
+    }
+
+    public void put(int key, int value) {
+        if(location.containsKey(key)){
+            Node curr=location.get(key);
+            curr.value=value;
+            markAsFirst(curr);
+        }
+        else{
+            Node made=new Node(key,value);
+            if(this.currSize<size){
+                putInFront(made);
+                currSize++;
+            }
+            else{
+                deleteLeastRecentlyUsed();
+                putInFront(made);
+            }
+            location.put(key,made);
+        }
+       
+    }
+}
+
+/**
+ * Your LRUCache object will be instantiated and called as such:
+ * LRUCache obj = new LRUCache(capacity);
+ * int param_1 = obj.get(key);
+ * obj.put(key,value);
+ */
