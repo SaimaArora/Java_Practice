@@ -1,0 +1,22 @@
+class Solution {
+    private boolean noZero(int num){
+        while(num>0){
+            if(num%10==0) return false;
+            num/=10;
+        }
+        return true;
+    }
+
+    public int[] getNoZeroIntegers(int n) {
+        int i=1;
+        while(i<n) {
+            int b=n-i;
+            int a=i;
+            if(noZero(b) && noZero(a)){
+                return new int[]{a,b};
+            }
+            i++;
+        }
+        return new int[]{};
+    }
+}
