@@ -1,0 +1,29 @@
+class Solution {
+    public int findKthPositive(int[] arr, int k) {
+
+        //brute force
+        int n=arr[arr.length-1],j=0,ans=0;
+        for(int i=1;i<=n+k;i++){
+            if(i<=n && arr[j]==i) j++;
+            else{
+                ans++;
+            }
+            if(ans==k) return i;
+        }
+        return -1;
+
+        //binarySearch
+        int left=0,right=arr.length-1;
+        while(left<=right){
+            int mid=left+(right-left)/2;
+            int diff=arr[mid]-(mid+1);
+            if(diff<k){
+                left=mid+1;
+            }
+            else{
+                right=mid-1;
+            }
+        }
+        return right+k+1;
+    }
+}
