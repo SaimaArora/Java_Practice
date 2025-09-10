@@ -1,0 +1,41 @@
+class Solution {
+
+    private boolean canCommunicate(Set<Integer> u1,Set<Integer> u2){
+        if(u1.size()>u2.size()) canCommunicate(u2,u1);
+        for(int lan: u1){
+            if(u2.contains(lan)) return true;
+        }
+        return false;
+    }
+
+    public int minimumTeachings(int n, int[][] languages, int[][] friends) {
+        List<Set<Integer>> lang=new ArrayList<>();
+        for(int i=0;i<languages.length;i++){
+            Set<Integer> language=new HashSet<>();
+            for(int j=0;j<languages[i].length;j++){
+                language.add(languages[i][j]);
+            }
+            lang.add(language);
+        }
+        Set<Integer> problem=new HashSet<>();
+        for(int[] friend: friends){
+            int u=friend[0]-1;
+            int v=friend[1]-1;
+            if(!canCommunicate(lang.get(u),lang.get(v))){
+                problem.add(u);
+                problem.add(v);
+            }
+
+        }
+        int[] langCount=new int[n+1];
+        int maxLan=0;
+        if(problem.isEmpty()) return 0;
+        for(int prob:problem){
+            for(int langUser:lang.get(prob)){
+                langCount[langUser]++;
+                maxLan=Math.max(maxLan,langCount[langUser]);
+            }
+        }
+        return problem.size()-maxLan;
+    }
+}
