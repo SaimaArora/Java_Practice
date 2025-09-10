@@ -1,0 +1,55 @@
+import java.util.Arrays;
+
+public class dpSub {
+
+    public static boolean recurSubsetSum(int ind,int target,int[] arr){
+        if(target==0) return true;
+        if(ind==0) return target==arr[0];
+        boolean notTake=recurSubsetSum(ind-1,target,arr);
+        boolean take=false;
+        if(target>arr[ind]){
+            take=recurSubsetSum(ind-1,target-arr[ind],arr);
+        }
+
+        return take || notTake;
+    }
+
+    public static boolean memoSubsetSum(int ind,int target,int[] arr,int[][] dp){
+        if(target==0) return true;
+        if(ind==0) return arr[0]==target;
+        if(dp[ind][target]!=-1) return dp[ind][target]==1;
+        boolean notTake=memoSubsetSum(ind-1,target,arr,dp);
+        boolean take=false;
+        if(arr[ind]<=target){
+            take=memoSubsetSum(ind-1,target-arr[ind],arr,dp);
+        }
+        boolean result=take || notTake;
+        dp[ind][target]=result?1:0;
+        return result;
+    }
+
+    public static int memoCountSubsetSum(int ind,int sum,int[] arr,int[][] dp){
+        if(sum==0) return 1;
+        if(ind==0) return arr[0]==sum?1:0;
+        if(dp[ind][sum]!=-1){
+            return dp[ind][sum];
+        }
+        int notTake=memoCountSubsetSum(ind-1,sum,arr,dp);
+        int take=0;
+        if(arr[ind]<=sum) take=memoCountSubsetSum(ind-1,sum-arr[ind],arr,dp);
+        dp[ind][sum]=take+notTake;
+        return take+notTake;
+    }
+
+    public static void main(String[] args){
+        int [] arr=new int[]{1,2,3,4,5};
+        int target=7;
+        int n=arr.length-1;
+        int[][] dp=new int[n+1][target+1];
+        for(int[] sub:dp){
+            Arrays.fill(sub,-1);
+        }
+        System.out.println(memoCountSubsetSum(n,target,arr,dp));
+    }
+
+}
