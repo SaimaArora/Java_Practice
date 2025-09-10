@@ -1,0 +1,28 @@
+class Solution {
+    public boolean tabulationSum(int[] arr,int target,int index){
+        int n=arr.length;
+        boolean[][] dp=new boolean[n][target+1];
+        for(int i=0;i<arr.length;i++){
+            dp[i][0]=true;
+        }
+        if(arr[0]<=target) dp[0][arr[0]]=true;
+        for(int ind=1;ind<arr.length;ind++) {
+            for(int tar=1;tar<=target;tar++){
+                boolean notTake=dp[ind-1][tar];
+                boolean take=false;
+                if(tar>=arr[ind])
+                take=dp[ind-1][tar-arr[ind]];
+                dp[ind][tar]=take || notTake;
+            }
+        }
+        return dp[n-1][target];
+    }
+
+    public boolean canPartition(int[] nums) {
+        int sum=0;
+        int n=nums.length;
+        for(int num:nums) sum+=num;
+        if(sum%2!=0) return false;
+        else return tabulationSum(nums,sum/2,n-1);
+    }
+}
