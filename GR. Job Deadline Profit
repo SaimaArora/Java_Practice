@@ -1,0 +1,27 @@
+    public int maxProfitDeadline(int[][] arr,int n){
+        int maxDead=0;
+        for(int[] job:arr){
+            if(job[1]>maxDead){
+                maxDead=job[1];
+            }
+        }
+        int[] ans=new int[maxDead];
+        int maxProfit=0;
+        Arrays.sort(arr,(a,b)->b[2]-a[2]);
+        for(int i=0;i<maxDead;i++) ans[i]=-1;
+        for(int i=0;i<arr.length;i++){
+            int num=arr[i][0];
+            int dead=arr[i][1];
+            int profit=arr[i][2];
+            for(int j=dead;j>0;j--){
+                if(ans[j]==-1){
+                    ans[j]=num;
+                    maxProfit+=profit;
+                    break;
+                }
+
+            }
+
+        }
+        return maxProfit;
+    }
