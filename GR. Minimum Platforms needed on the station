@@ -1,0 +1,17 @@
+public int minPlatformsAtStation(int[] arriv,int[] depar){
+        Arrays.sort(depar);
+        int maxCount=0,count=1;
+        int a=1,d=0;
+        int n=arriv.length;
+        while(a<n && d<n){
+            if(depar[d]<arriv[a]){
+                d++;
+                count--;
+            } else{
+                a++;
+                count++;
+            }
+            maxCount=Math.max(count,maxCount);
+        }
+        return maxCount;
+    }
