@@ -1,0 +1,49 @@
+class Solution {
+    public String[] spellchecker(String[] wordlist, String[] queries) {
+        Set<String> exact=new HashSet<>();
+        for(String s:wordlist){
+            exact.add(s);
+        }
+        HashMap<String,String> caseInsen=new HashMap<>();
+        for(String s:wordlist){
+            String lower=s.toLowerCase();
+            if(!caseInsen.containsKey(lower)) caseInsen.put(lower,s);
+        }
+        HashMap<String,String> vowels=new HashMap<>();
+        for(String s:wordlist){
+            StringBuilder vow=new StringBuilder();
+            for(char ch:s.toCharArray()){
+                if("aeiouAEIOU".contains(String.valueOf(ch))){
+                    vow.append("*");
+                }else{
+                    vow.append(ch);
+                }
+            }
+            String vowelStr=vow.toString().toLowerCase();
+            if(!vowels.containsKey(vowelStr)){
+                vowels.put(vowelStr,s);
+            }
+        }
+        for(int i=0;i<queries.length;i++){
+            if(exact.contains(queries[i])){
+                continue;
+            }
+            else if(caseInsen.containsKey(queries[i].toLowerCase())){
+                queries[i]=caseInsen.get(queries[i].toLowerCase());
+                continue;
+            } 
+            StringBuilder checkVow=new StringBuilder();
+            for(char ch:queries[i].toCharArray()){
+                if("aeiouAEIOU".contains(String.valueOf(ch))) checkVow.append("*");
+                else checkVow.append(ch);
+            }
+            String vowString=checkVow.toString().toLowerCase();
+            if(vowels.containsKey(vowString)){
+                queries[i]=vowels.get(vowString);
+                continue;
+            }
+            else queries[i]="";
+        }
+        return queries;
+    }
+}
