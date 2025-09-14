@@ -1,0 +1,52 @@
+class Solution {
+    public int tabulation(String s,String t,int lenS,int lenT){
+        int[][] dp=new int[lenS+1][lenT+1];
+        for(int i=0;i<=lenS;i++){
+            dp[i][0]=1;
+        }
+        for(int i=1;i<=lenT;i++){
+            dp[0][i]=0;
+        }
+        for(int i=1;i<=lenS;i++){
+            for(int j=1;j<=lenT;j++){
+                if(s.charAt(i-1)==t.charAt(j-1)){
+                    dp[i][j]=dp[i-1][j-1]+dp[i-1][j];
+                }
+                else{
+                    dp[i][j]=dp[i-1][j];
+                }
+            }
+        }
+        return dp[lenS][lenT];
+    }
+    public int memo(int i, int j, String s, String t,int[][] dp){
+        if(j<0) return 1;
+        if(i<0) return 0;
+        if(dp[i][j]!=-1) return dp[i][j];
+        if(s.charAt(i)==t.charAt(j)){
+            return dp[i][j]=memo(i-1,j-1,s,t,dp)+memo(i-1,j,s,t,dp);
+        }
+        else {
+            return dp[i][j]=memo(i-1,j,s,t,dp);
+        }
+    }
+    public int recursive(int i,int j, String s, String t){
+        if(j<0) return 1;
+        if(i<0) return 0;
+        if(s.charAt(i)==t.charAt(j)){
+            return recursive(i-1,j-1,s,t)+recursive(i-1,j,s,t);
+        }
+        else {
+            return recursive(i-1,j,s,t);
+        }
+    }
+    public int numDistinct(String s, String t) {
+        int lenS=s.length(),lenT=t.length();
+        // int dp[][]=new int[lenS][lenT];
+        // for(int [] rows: dp){
+        //     Arrays.fill(rows,-1);
+        // }
+        // return memo(lenS-1,lenT-1,s,t,dp);
+        return tabulation(s,t,lenS,lenT);
+    }
+}
