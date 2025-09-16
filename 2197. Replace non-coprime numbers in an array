@@ -1,0 +1,23 @@
+class Solution {
+
+    public int GCD(int a,int b){
+        if(b==0) return a;
+        else return GCD(b,a%b);
+    }
+    public int LCM(int n1,int n2){
+        return n1/GCD(n1,n2)*n2;
+    }
+
+    public List<Integer> replaceNonCoprimes(int[] nums) {
+        Stack<Integer> st=new Stack<>();
+        for(int num:nums){
+            int n1=num;
+            while(!st.isEmpty() && GCD(n1,st.peek())>1){
+                int n2=st.pop();
+                n1=LCM(n1,n2);
+            }
+            st.push(n1);
+        }
+        return new ArrayList<>(st);
+    }
+}
