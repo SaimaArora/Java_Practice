@@ -1,0 +1,74 @@
+class TaskManager {
+    
+    class Task implements Comparable<Task>{
+        int uid;
+        int tid;
+        int prior;
+        Task(int i,int t,int p){
+            uid=i;
+            tid=t;
+            prior=p;
+        }
+
+        @Override
+        public int compareTo(Task other){
+            if(this.prior!=other.prior){
+                return Integer.compare(other.prior,this.prior);
+            }
+            return Integer.compare(other.tid,this.tid);
+        }
+    }
+
+    HashMap<Integer,Task> taskData;
+    TreeSet<Task> data; 
+    public TaskManager(List<List<Integer>> tasks) {
+        taskData=new HashMap<>();
+        data=new TreeSet<>();
+        int n=tasks.size();
+        for(int i=0;i<n;i++){
+            List<Integer> row=tasks.get(i);
+            Task task=new Task(row.get(0),row.get(1),row.get(2));
+            data.add(task);
+            taskData.put(task.tid,task);
+        }
+    }
+    
+    public void add(int u, int t, int p) {
+        Task task=new Task(u,t,p);
+        data.add(task);
+        taskData.put(task.tid,task);
+    }
+    
+    public void edit(int t, int p) {
+        Task old=taskData.get(t);
+        data.remove(old);
+        Task updated=new Task(old.uid,t,p);
+        data.add(updated);
+        taskData.put(t,updated);
+    }
+    
+    public void rmv(int t) {
+        Task old=taskData.get(t);
+        data.remove(old);
+        taskData.remove(t);
+    }
+    
+    public int execTop() {
+        if(data.isEmpty()) 
+        return -1;
+        Task top=data.first();
+        data.remove(top);
+        taskData.remove(top.tid);
+        return top.uid;
+        
+    }
+}
+
+/**
+ * Your TaskManager object will be instantiated and called as such:
+ * TaskManager obj = new TaskManager(tasks);
+ * obj.add(userId,taskId,priority);
+ * obj.edit(taskId,newPriority);
+ * obj.rmv(taskId);
+ * int param_4 = obj.execTop();
+ */
