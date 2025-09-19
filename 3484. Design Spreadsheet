@@ -1,0 +1,46 @@
+class Spreadsheet {
+
+    HashMap<String,Integer> excel;
+    int totRows;
+    public Spreadsheet(int rows) {
+        totRows=rows;
+        excel=new HashMap<>();
+    }
+    
+    public void setCell(String cell, int value) {
+        excel.put(cell,value);
+    }
+    
+    public void resetCell(String cell) {
+        if(excel.containsKey(cell)) excel.remove(cell);
+    }
+    
+    private boolean isLetter(char letter){
+        if(letter>='A' && letter<='Z'){
+            return true;
+        }
+        return false;
+    }
+    public int getValue(String formula) {
+        int val1=0,val2=0;
+        String[] sum=formula.substring(1).split("\\+");
+        for(String str:sum){
+            char ch=str.charAt(0);
+            if(isLetter(ch)){
+                val1+=excel.getOrDefault(str,0);
+            }
+            else{
+                val2+=Integer.parseInt(str);
+            }
+        }
+        return val1+val2;
+    }
+}
+
+/**
+ * Your Spreadsheet object will be instantiated and called as such:
+ * Spreadsheet obj = new Spreadsheet(rows);
+ * obj.setCell(cell,value);
+ * obj.resetCell(cell);
+ * int param_3 = obj.getValue(formula);
+ */
