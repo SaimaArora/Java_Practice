@@ -1,0 +1,105 @@
+import java.util.*;
+
+class Router {
+    private final int memoryLimit;
+    private final Deque<Packet> packetQueue;
+    private final HashSet<Packet> exist;
+    private final HashMap<Integer, List<Integer>> destinationData;
+
+    private static class Packet {
+        int source;
+        int destination;
+        int timestamp;
+
+        Packet(int s, int d, int t) {
+            this.source = s;
+            this.destination = d;
+            this.timestamp = t;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            Packet packet = (Packet) o;
+            return source == packet.source && destination == packet.destination && timestamp == packet.timestamp;
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(source, destination, timestamp);
+        }
+    }
+
+    public Router(int memoryLimit) {
+        this.memoryLimit = memoryLimit;
+        this.packetQueue = new ArrayDeque<>();
+        this.exist = new HashSet<>();
+        this.destinationData = new HashMap<>();
+    }
+
+    public boolean addPacket(int source, int destination, int timestamp) {
+        Packet newPacket = new Packet(source, destination, timestamp);
+        if (!exist.add(newPacket)) {
+            return false;
+        }
+
+        if (packetQueue.size() == this.memoryLimit) {
+            Packet oldestPacket = packetQueue.pollFirst();
+            exist.remove(oldestPacket);
+            destinationData.get(oldestPacket.destination).remove(0);
+        }
+
+        packetQueue.addLast(newPacket);
+        destinationData.computeIfAbsent(destination, k -> new ArrayList<>()).add(timestamp);
+        return true;
+    }
+
+    public int[] forwardPacket() {
+        if (packetQueue.isEmpty()) {
+            return new int[0];
+        }
+
+        Packet forwardedPacket = packetQueue.pollFirst();
+        exist.remove(forwardedPacket);
+        destinationData.get(forwardedPacket.destination).remove(0);
+        
+        return new int[]{forwardedPacket.source, forwardedPacket.destination, forwardedPacket.timestamp};
+    }
+
+    public int getCount(int destination, int startTime, int endTime) {
+        if (!destinationData.containsKey(destination)) {
+            return 0;
+        }
+        List<Integer> timestamps = destinationData.get(destination);
+        int left = lowerBound(timestamps, startTime);
+        int right = upperBound(timestamps, endTime);
+        return right - left;
+    }
+
+    private int lowerBound(List<Integer> list, int target) {
+        int low = 0, high = list.size();
+        while (low < high) {
+            int mid = low + (high - low) / 2;
+            if (list.get(mid) < target) {
+                low = mid + 1;
+            } else {
+                high = mid;
+            }
+        }
+        return low;
+    }
+
+    private int upperBound(List<Integer> list, int target) {
+        int low = 0, high = list.size();
+        while (low < high) {
+            int mid = low + (high - low) / 2;
+            if (list.get(mid) <= target) {
+                low = mid + 1;
+            } else {
+                high = mid;
+            }
+        }
+        return low;
+    }
+}
