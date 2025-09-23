@@ -1,0 +1,56 @@
+class Solution {
+    private Set<Integer>[] rows=new HashSet[9];
+    private Set<Integer>[] cols=new HashSet[9];
+    private Set<Integer>[] boxes=new HashSet[9];
+    public boolean solve(int k,List<int[]> emptyCells,char[][] board){
+        if(k==emptyCells.size()) return true;
+        int i=emptyCells.get(k)[0];
+        int j=emptyCells.get(k)[1];
+        int idx=i/3*3+j/3;
+        for(int num=1;num<=9;num++){
+            
+            if(!rows[i].contains(num) && !cols[j].contains(num) && !boxes[idx].contains(num)){
+                board[i][j]=(char)(num+'0');
+                rows[i].add(num);
+                cols[j].add(num);
+                boxes[idx].add(num);
+                if(solve(k+1,emptyCells,board)) return true;
+                else{
+                    board[i][j]='.';
+                    rows[i].remove(num);
+                    cols[j].remove(num);
+                    boxes[idx].remove(num);
+                }
+            }
+        }
+        return false;
+    }
+    public void solveSudoku(char[][] board) {
+        
+        List<int[]> emptyCells;
+        for(int i=0;i<9;i++){
+            rows[i]=new HashSet<>();
+            cols[i]=new HashSet<>();
+            boxes[i]=new HashSet<>();
+        }
+        emptyCells = new ArrayList<>();
+        //fill the sets and list
+        for(int i=0;i<9;i++){
+            for(int j=0;j<9;j++){
+                if(board[i][j]=='.'){
+                    emptyCells.add(new int[]{i,j});
+                }
+                else{
+                    int idx=(i/3)*3+j/3;
+                    int num=board[i][j]-'0';
+                    rows[i].add(num);
+                    cols[j].add(num);
+                    boxes[idx].add(num);
+                }
+            }
+        }
+
+        //recursive function
+        solve(0,emptyCells,board);
+    }
+}
