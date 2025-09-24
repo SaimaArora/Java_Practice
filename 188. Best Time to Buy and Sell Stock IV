@@ -1,0 +1,50 @@
+class Solution {
+
+    public int recursion(int[] prices,int trans,int index,int buy){
+        if(index==prices.length || trans== 0) return 0;
+        if(buy == 1){
+            return Math.max(-prices[index]+recursion(prices,trans,index+1,0), 0+recursion(prices,trans,index+1,1));
+        }
+        else{
+            return Math.max(prices[index]+recursion(prices,trans-1,index+1,1),0+recursion(prices,trans,index+1,0));
+        }
+    }
+    public int memo(int[] prices,int index,int trans,int buy,int[][][] dp){
+        if(index==prices.length || trans== 0) return 0;
+        if(dp[index][buy][trans]!= -1) return dp[index][buy][trans];
+        if(buy == 1){
+            return dp[index][buy][trans] = Math.max(-prices[index]+memo(prices,index+1,trans,0,dp), 0+memo(prices,index+1,trans,1,dp));
+        }
+        else{
+            return dp[index][buy][trans] = Math.max(prices[index]+memo(prices,index+1,trans-1,1,dp),0+memo(prices,index+1,trans,0,dp));
+        }
+    }
+    public int tabulation(int[] prices,int k){
+        int n=prices.length;
+        int dp[][][] = new int[n+1][2][k+1];
+        for(int ind=n-1;ind>=0;ind--){
+            for(int buy=1;buy>=0;buy--){
+                for(int trans=1;trans<=k;trans++){
+                    if(buy==1){
+                        dp[ind][buy][trans]=Math.max(-prices[ind] + dp[ind+1][0][trans], 0+ dp[ind+1][1][trans]);
+                    }
+                    else{
+                        dp[ind][buy][trans] = Math.max(prices[ind] + dp[ind+1][1][trans-1], 0+dp[ind+1][0][trans]);
+                    }
+                }
+            }
+        }
+        return dp[0][1][k];
+    }
+
+    public int maxProfit(int k, int[] prices) {
+        // int[][][] dp=new int[prices.length][2][k+1];
+        // for(int i=0;i<prices.length;i++){
+        //     for(int j=0;j<2;j++){
+        //         Arrays.fill(dp[i][j],-1);
+        //     }
+        // }
+        // return memo(prices,0,k,1,dp);
+        return tabulation(prices,k);
+    }
+}
