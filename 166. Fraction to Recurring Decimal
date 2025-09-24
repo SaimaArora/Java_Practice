@@ -1,0 +1,34 @@
+class Solution {
+    public String fractionToDecimal(int num, int denom) {
+        StringBuilder ans=new StringBuilder();
+        boolean neg=false;
+        if ((num<0 && denom>0) || (num>0 && denom<0)) neg=true;
+        if(neg) ans.append("-");
+        long n=Math.abs((long) num);;
+        long d=Math.abs((long) denom);;
+        long quo=n/d;
+        ans.append(String.valueOf(quo));
+        //remain -> remiander,startindex
+        HashMap<Long,Integer> remain=new HashMap<>();
+        long remainder=n%d;
+        if(remainder==0) return ans.toString();
+        //remainder is positive
+        else{
+            ans.append(".");
+            while(remainder!=0){
+                if(remain.containsKey(remainder)){
+                    int start=remain.get(remainder);
+                    ans.insert(start,"(");
+                    ans.append(")");
+                    break;
+                }
+                remain.put(remainder,ans.length());
+                remainder*=10;
+                ans.append(remainder/d);
+                remainder%=d;
+            }
+            
+        }
+        return ans.toString();
+    }
+}
