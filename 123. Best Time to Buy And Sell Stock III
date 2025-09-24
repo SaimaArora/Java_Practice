@@ -1,0 +1,50 @@
+class Solution {
+    public int recursive(int[] prices,int index,int trans,int buy){
+        if(trans == 0) return 0;
+        if(index==prices.length) return 0;
+        if(buy==1){
+            return Math.max(-prices[index]+recursive(prices,index+1,trans,0),0+recursive(prices,index+1,trans,1));
+        }
+        else{
+            return Math.max(prices[index]+recursive(prices,index+1,trans-1,1),0+ recursive(prices,index+1,trans,0));
+        }
+    }
+    public int memo(int[] prices,int index,int trans,int buy,int[][][] dp) {
+        if(trans == 0 || index==prices.length) return 0;
+        if(dp[index][buy][trans] != -1) return dp[index][buy][trans];
+        if(buy == 1){
+            return dp[index][buy][trans] = Math.max(-prices[index]+memo(prices,index+1,trans,0,dp),0+memo(prices,index+1,trans,1,dp));
+        }
+        else{
+            return dp[index][buy][trans] = Math.max(prices[index]+memo(prices,index+1,trans-1,1,dp),0+ memo(prices,index+1,trans,0,dp));
+        }
+    }
+    public int tabulation(int[] prices){
+        int n=prices.length;
+        int[][][] dp=new int[n+1][2][3];
+        for(int index = n-1;index>=0;index--){
+            for(int buy=0;buy<2;buy++){
+                for(int trans=1;trans<=2;trans++){
+                    if(buy == 0){
+                        dp[index][buy][trans] = Math.max(-prices[index] + dp[index+1][1][trans], 0 + dp[index+1][0][trans]);
+                    }
+                    else{
+                        dp[index][buy][trans] = Math.max(prices[index] + dp[index+1][0][trans-1],0 + dp[index+1][1][trans]);
+                    }
+                }
+            }
+        }
+        return dp[0][0][2];
+        
+    }
+    public int maxProfit(int[] prices) {
+        // int dp[][][]=new int[prices.length][2][3];
+        // for(int i=0;i<prices.length;i++){
+        //     for(int j=0;j<2;j++){
+        //         Arrays.fill(dp[i][j],-1);
+        //     }
+        // }
+        // return memo(prices,0,2,1,dp);
+        return tabulation(prices);
+    }
+}
