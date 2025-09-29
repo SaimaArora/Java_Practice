@@ -1,0 +1,38 @@
+class Solution {
+
+    public int recursion(int start, int end, int[] values, int[][] dp) {
+        if (end - start < 2) return 0;
+        if(dp[start][end] != -1) return dp[start][end];
+        int min_ans = Integer.MAX_VALUE;
+        for(int third = start +1; third < end; third++) {
+            int curr_score = (values[start] * values[third] * values[end]) + recursion(start, third, values, dp) + recursion(third, end, values, dp);
+            min_ans = Math.min(curr_score, min_ans);
+        }
+        return dp[start][end] = min_ans;
+    }
+
+    public int tabulation(int[] values) {
+        int n = values.length;
+        int[][] dp = new int[n][n];
+        for(int len = 2; len < n; len++){
+            for(int start = 0; start < n - len; start++) {
+                int end = start + len;
+                int min_ans = Integer.MAX_VALUE;
+                for(int third = start + 1; third < end; third++) {
+                    int curr_score = (values[start] * values[third] * values[end]) + dp[start][third] + dp[third][end];
+                    min_ans = Math.min(curr_score, min_ans);
+                }
+                dp[start][end] = min_ans;
+            }
+        }
+        return dp[0][n-1];
+    }
+    public int minScoreTriangulation(int[] values) {
+        // int[][] dp = new int[values.length][values.length];
+        // for(int[] rows : dp) {
+        //     Arrays.fill(rows,-1);
+        // }
+        // return recursion(0, values.length-1, values, dp);
+        return tabulation(values);
+    }
+}
