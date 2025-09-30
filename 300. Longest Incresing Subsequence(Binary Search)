@@ -1,0 +1,32 @@
+class Solution {
+    private int binarySearch(List<Integer> arr, int target) {
+        int left = 0, right = arr.size()-1;
+        while(left <= right) {
+            int mid = left + (right-left)/2;
+            if(arr.get(mid) == target){
+                return mid;
+            }
+            if(arr.get(mid)<=target) {
+                left = mid+1;
+            }
+            else{
+                right = mid - 1;
+            }
+        }
+        return left;
+    }
+    public int lengthOfLIS(int[] nums) {
+        List<Integer> result = new ArrayList<>();
+        result.add(nums[0]);
+        for(int num : nums) {
+            if(num > result.get(result.size()-1)) {
+                result.add(num);
+            }
+            else{
+                int idx = binarySearch(result, num);
+                result.set(idx, num);
+            }
+        }
+        return result.size();
+    }
+}
