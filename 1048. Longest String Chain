@@ -1,0 +1,43 @@
+class Solution {
+
+    private boolean compare(String a, String b){
+        int j=0, i=0;
+        boolean one = false;
+        if (b.length() != a.length() + 1) {
+            return false;
+        }
+        while(j < b.length()){
+            if(i<a.length() && j<b.length() && a.charAt(i) == b.charAt(j)){
+                j++; i++;
+            }
+            else if(i<a.length() && j<b.length() && !one && a.charAt(i)!= b.charAt(j)){
+                j++;
+                one = true;
+            }
+            else if(i==a.length() && j==b.length()-1) return true;
+            else return false;
+        }
+        return true;
+    }
+
+    static Comparator<String> comp = (s1,s2) -> s1.length()-s2.length();
+    public int longestStrChain(String[] words) {
+        int n = words.length;
+        int dp [] = new int[n];
+        Arrays.sort(words, comp);
+        Arrays.fill(dp,1);
+        int ans = 1;
+        for(int ind = 0; ind < n; ind++){
+            for(int prev = 0;prev<ind;prev++){
+                if(compare(words[prev],words[ind]) && 1+dp[prev]>dp[ind]){
+                    dp[ind] = dp[prev] + 1;
+                }
+                if(dp[ind]>ans){
+                    ans = dp[ind];
+                }
+            }
+        }
+        
+        return ans;
+    }
+}
