@@ -1,0 +1,27 @@
+class Solution {
+    public int maxBottlesDrunk(int numBottles, int numExchange) {
+        int emp = 0, drunk = 0, full = numBottles, exch = numExchange;
+        //first step
+        drunk = full;
+        full = 0;
+        emp += drunk;
+        while (emp + full >= exch) {
+            if (emp >= exch) {
+                emp -= exch;
+                full++;
+                exch++;
+            }
+            else if (full + emp >= exch) {
+                int leftover = exch - emp;
+                full -= leftover;
+                emp +=leftover;
+                drunk+=leftover;
+            }
+        }
+        if (full > 0){
+            drunk += full;
+            full = 0;
+        }
+        return drunk;
+    }
+}
