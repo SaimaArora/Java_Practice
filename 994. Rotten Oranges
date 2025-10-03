@@ -1,0 +1,34 @@
+class Solution {
+    public int orangesRotting(int[][] grid) {
+        int n = grid.length, m = grid[0].length;
+        int[][] visited = new int[n][m];
+        int cntFresh = 0, cnt = 0, time = 0;
+        Queue<int[]> rotten = new LinkedList<>();
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                if(grid[i][j] == 2) {
+                    rotten.offer(new int[]{i, j, 0});
+                    visited[i][j] = 2;
+                }
+                if(grid[i][j] == 1) cntFresh++;
+            }
+        }
+        int[][] neighbours = new int[][]{{0, 1}, {1, 0}, {-1, 0}, {0, -1}}; 
+        while(!rotten.isEmpty()){
+            int[] currRotten = rotten.poll();
+            int r = currRotten[0], c = currRotten[1], t = currRotten[2];
+            for(int[] del : neighbours) {
+                int newr = del[0] + r, newc = del[1] + c;
+                if(newr >= 0 && newr <n && newc >= 0 && newc < m && visited[newr][newc] == 0 && grid[newr][newc] == 1) {
+                    visited[newr][newc] = 2;
+                    rotten.offer(new int[]{newr, newc, t + 1});
+                    cnt++;
+                }
+            }
+            time = t;
+        }
+
+        if(cnt < cntFresh) return -1;
+        return time;
+    }
+}
