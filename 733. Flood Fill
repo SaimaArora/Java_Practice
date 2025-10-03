@@ -1,0 +1,21 @@
+class Solution {
+
+    public void dfs(int[][] image, int[][] ans, int row, int col, int iniColor, int color, int n, int m) {
+        ans[row][col] = color;
+        int[][] del = new int[][]{{1, 0}, {0, 1}, {-1, 0}, {0, -1}};
+        for(int [] d : del) {
+            int newr = d[0] + row, newc = d[1] + col;
+            if(newr >= 0 && newc >= 0 && newr < n && newc < m && image[newr][newc] == iniColor && ans[newr][newc]!= color) {
+                dfs(image, ans, newr, newc, iniColor, color, n, m);
+            }
+        }
+    }
+
+    public int[][] floodFill(int[][] image, int sr, int sc, int color) {
+        if(image[sr][sc] == color) return image;
+        int[][] ans = image;
+        int initial = image[sr][sc], n = image.length, m = image[0].length;
+        dfs(image, ans, sr, sc, initial, color, n, m);
+        return ans;
+    }
+}
