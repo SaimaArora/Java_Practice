@@ -1,0 +1,34 @@
+class Solution {
+    public int trapRainWater(int[][] heightmp) {
+        int rows = heightmp.length, total = 0;
+        int cols = heightmp[0].length;
+        if(rows<3 || cols<3) return 0;
+        boolean[][] visited = new boolean[rows][cols];
+        PriorityQueue<int[]> pq = new PriorityQueue<>((a,b)-> a[0] - b[0]);
+        for (int r = 0; r < rows; r++) {
+            for (int c = 0; c < cols; c++) {
+                if(r == 0 ||  r == rows-1 ||c == 0 ||c == cols - 1) {
+                    pq.offer(new int[]{heightmp[r][c], r, c});
+                    visited[r][c] = true;
+                }
+            }
+        }
+        while(!pq.isEmpty()){
+            int[] curr = pq.poll();
+            int h = curr[0], r = curr[1], c = curr[2];
+            int[] neighbours[] = new int[][]{{0,1}, {1,0}, {-1,0}, {0,-1}};
+            for(int[] neighbour : neighbours) {
+                int newr = r+neighbour[0];
+                int newc = c+neighbour[1];
+                if(newr >= 0 && newc >= 0 && newr < rows && newc < cols && !visited[newr][newc]) {
+                    visited[newr][newc] = true;
+                    if (heightmp[newr][newc] < h){
+                        total+= h - heightmp[newr][newc];
+                    }
+                    pq.offer(new int[]{Math.max(h, heightmp[newr][newc]), newr, newc});
+                }
+            }
+        }
+        return total;
+    }
+}
