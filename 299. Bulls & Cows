@@ -1,0 +1,28 @@
+class Solution {
+    public String getHint(String secret, String guess) {
+        HashMap<Character,Integer> freq = new HashMap<>();
+        HashMap<Character,Integer> guessMap = new HashMap<>();
+        for(char num : secret.toCharArray()) {
+            freq.put(num, freq.getOrDefault(num, 0)+1);
+        }
+        for(char num : guess.toCharArray()) {
+            guessMap.put(num, guessMap.getOrDefault(num, 0)+1);
+        }
+        int cows=0, bulls = 0;
+        for(int i = 0; i < guess.length(); i++) {
+            char ch = guess.charAt(i);
+            if(freq.containsKey(ch) && freq.get(ch) >= 1 && (ch == secret.charAt(i))){
+                freq.put(ch, freq.get(ch) - 1);
+                guessMap.put(ch, guessMap.get(ch) - 1);
+                 bulls++;
+            }
+        }
+
+        for(char i : freq.keySet()){
+            if(guessMap.containsKey(i)){
+                cows+=Math.min(freq.get(i), guessMap.get(i));
+            }
+        }
+        return new String(bulls+"A"+cows+"B");
+    }
+}
