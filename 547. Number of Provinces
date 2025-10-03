@@ -1,0 +1,23 @@
+class Solution {
+    private void dfs(int city, int[][] isConnected, boolean[] visited) {
+        visited[city] = true;
+        for (int cur = 0; cur < isConnected[city].length; cur++) {
+            int connected = isConnected[city][cur];
+            if (connected == 1 && !visited[cur]) {
+                dfs(cur, isConnected, visited);
+            }
+        }
+    }    
+    public int findCircleNum(int[][] isConnected) {
+        int len = isConnected.length;
+        int provinces = 0;
+        boolean[] visited = new boolean[len];
+        for(int i = 0; i< isConnected.length;i++){
+            if(!visited[i]){
+                dfs(i, isConnected, visited);
+                provinces++;
+            }
+        }
+        return provinces;
+    }
+}
