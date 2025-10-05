@@ -1,0 +1,47 @@
+class Solution {
+
+    public void dfs(int[][] heights, int r, int c, int prev, boolean[][] reachable) {
+        int n = heights.length, m = heights[0].length;
+        if(r < 0 || c < 0 || r >= n || c >= m) return;
+        if (reachable[r][c]==true) return;
+        if(heights[r][c] < prev) return;
+        reachable[r][c] = true;
+        dfs(heights, r-1, c, heights[r][c], reachable);
+        dfs(heights, r, c-1, heights[r][c], reachable);
+        dfs(heights, r+1, c, heights[r][c], reachable);
+        dfs(heights, r, c+1, heights[r][c], reachable);
+    }
+
+    public List<List<Integer>> pacificAtlantic(int[][] heights) {
+        int n = heights.length, m = heights[0].length;
+        List<List<Integer>> ans = new ArrayList<>();
+        boolean[][] reach_pacific = new boolean[n][m];
+        boolean[][] reach_atlantic = new boolean[n][m];
+        Queue<int[]> can_reach = new LinkedList<>();
+        for (int r = 0; r < n; r++) {
+            for (int c = 0; c < m; c++) {
+                reach_pacific[r][c] = false;
+                reach_atlantic[r][c] = false;
+            }
+        }
+        //top and bottom
+        for(int i = 0; i < m; i++) {
+            dfs(heights, 0, i, Integer.MIN_VALUE, reach_pacific);
+            dfs(heights, n-1, i, Integer.MIN_VALUE, reach_atlantic);
+        }
+        //for left and right
+        for (int j = 0; j < n; j++ ){
+            dfs(heights, j, 0, Integer.MIN_VALUE, reach_pacific);
+            dfs(heights, j, m-1, Integer.MIN_VALUE, reach_atlantic);
+        }
+        //find common
+        for(int r = 0; r < n; r++) {
+            for (int c = 0; c < m; c++) {
+                if(reach_pacific[r][c] && reach_atlantic[r][c]) {
+                    ans.add(Arrays.asList(r, c));
+                }
+            }
+        }
+        return ans;
+    }
+}
