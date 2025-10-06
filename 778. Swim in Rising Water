@@ -1,0 +1,23 @@
+class Solution {
+    public int swimInWater(int[][] grid) {
+        PriorityQueue<int[]> minHeap = new PriorityQueue<>((a, b)-> a[0] - b[0]);
+        int n = grid.length, m = grid[0].length;
+        boolean[][] visited = new boolean[n][m];
+        minHeap.add(new int[]{grid[0][0], 0, 0});
+        int[][] directions = new int[][]{{0, 1}, {1, 0}, {-1, 0}, {0, -1}};
+        while(!minHeap.isEmpty()) {
+            int[] curr = minHeap.poll();
+            int elevation = curr[0];
+            int r = curr[1], c = curr[2];
+            if(r == n-1 && c == m-1) return elevation;
+            for(int[] dir : directions) {
+                int nr = r + dir[0], nc = c + dir[1];
+                if(nr >= 0 && nr < n && nc >= 0  && nc < m && !visited[nr][nc]) {
+                    minHeap.add(new int[]{Math.max(elevation, grid[nr][nc]), nr, nc});
+                    visited[nr][nc] = true;
+                }
+            }
+        }
+        return -1;
+    }
+}
