@@ -1,0 +1,40 @@
+class Solution {
+    class Word{
+        String word;
+        int level;
+        Word(String str, int lev) {
+            word = str;
+            level = lev;
+        }
+    }
+    public int ladderLength(String beginWord, String endWord, List<String> wordList) {
+        Queue<Word> chain = new LinkedList<>();
+        Set<String> dict = new HashSet<>();
+        int n = wordList.size();
+        for(int i = 0; i < n; i++) {
+            dict.add(wordList.get(i));
+        }
+        dict.remove(beginWord);
+        chain.offer(new Word(beginWord, 1));
+        while(!chain.isEmpty()) {
+            Word w = chain.poll();
+            int level = w.level;
+            String curr = w.word;
+            if(curr.equals(endWord)) return level;
+
+            for (int i = 0; i < curr.length(); i++) {
+                char ch = curr.charAt(i);
+                for (char c = 'a'; c <= 'z'; c++) {
+                    char[] arr = curr.toCharArray();
+                    arr[i] = c;
+                    String newWord = new String(arr);
+                    if(dict.contains(newWord)) {
+                        chain.offer(new Word(newWord, level + 1));
+                        dict.remove(newWord);
+                    }
+                }
+            } 
+        }
+        return 0;
+    }
+}
