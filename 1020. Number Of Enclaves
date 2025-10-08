@@ -1,0 +1,44 @@
+class Solution {
+    public int numEnclaves(int[][] grid) {
+        Queue<int[]> boundary = new LinkedList<>();
+        int n = grid.length, m = grid[0].length;
+        int[][] directions = new int[][]{{0, 1}, {1, 0}, {-1, 0}, {0, -1}};
+        int[][] visited = new int[n][m];
+        for(int i = 0; i < n; i++) {
+            if(grid[i][0] == 1) {
+                boundary.offer(new int[]{i, 0});
+            }
+            if (grid[i][m - 1] == 1) {
+                boundary.offer(new int[]{i, m - 1});
+            }
+        }
+        for(int j = 0; j < m; j++) {
+            if (grid[0][j] == 1) {
+                boundary.offer(new int[]{0, j});
+            }
+            if (grid[n - 1][j] == 1) {
+                boundary.offer(new int[]{n - 1, j});
+            }
+        }
+        while (!boundary.isEmpty()) {
+            int curr[] = boundary.poll();
+            visited[curr[0]][curr[1]] = 1;
+            for(int dir[] : directions) {
+                int nr = curr[0] + dir[0], nc = curr[1] + dir[1];
+                if(nr >= 0 && nc >= 0 && nr < n && nc < m && visited[nr][nc] == 0 && grid[nr][nc] == 1) {
+                    visited[nr][nc] = 1;
+                    boundary.offer(new int[]{nr, nc});
+                }
+            }
+        }
+        int result = 0;
+        for(int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                if (visited[i][j] == 0 && grid[i][j] == 1) {
+                    result++;
+                }
+            }
+        }
+        return result;
+    }
+}
