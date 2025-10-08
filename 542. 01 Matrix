@@ -1,0 +1,30 @@
+class Solution {
+    public int[][] updateMatrix(int[][] mat) {
+        Queue<int[]> steps = new LinkedList<>();
+        int n = mat.length, m = mat[0].length;
+        int[][] visited = new int[n][m];
+        int[][] distance = new int[n][m]; //resultant array
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                if (mat[i][j] == 0) {
+                    steps.offer(new int[]{i, j, distance[i][j]});
+                    visited[i][j] = 1;
+                }
+            }
+        }
+        int[][] direction = new int[][] {{0, 1}, {1, 0}, {-1, 0}, {0, -1}}; 
+        while(!steps.isEmpty()) {
+            int[] curr = steps.poll();
+            int r = curr[0], c = curr[1], dist = curr[2];
+            for(int[] dir : direction) {
+                int nr = r + dir[0], nc = dir[1] + c;
+                if(nr >= 0 && nc >= 0 && nr < n && nc < m && mat[nr][nc] == 1 && visited[nr][nc] == 0) {
+                    visited[nr][nc] = 1;
+                    distance[nr][nc] = 1 + dist;
+                    steps.offer(new int[]{nr, nc, distance[nr][nc]});
+                }
+            }
+        }
+        return distance;
+    }
+}
