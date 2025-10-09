@@ -1,0 +1,43 @@
+class Solution {
+
+    private void backtrack(List<List<String>> answers, int row, char[][] board, Set<Integer> cols, Set<Integer> posdiag, Set<Integer> negdiag) {
+        if(row == board.length) {
+            List<String> sol = new ArrayList<>();
+            for(int i = 0; i<board.length ; i++) {
+                sol.add(new String(board[i]));
+            }
+            answers.add(sol);
+            return;
+        }
+        for(int col = 0; col < board[0].length; col++){
+            int pos = row+col, neg = row-col;
+            if (cols.contains(col) || posdiag.contains(pos) || negdiag.contains(neg)) {
+                continue;
+            }
+            board[row][col] = 'Q';
+            cols.add(col);
+            posdiag.add(pos);
+            negdiag.add(neg);
+            backtrack(answers, row+1, board, cols, posdiag, negdiag);
+            board[row][col] = '.';
+            cols.remove(col);
+            posdiag.remove(pos);
+            negdiag.remove(neg);
+        }
+    }
+
+    public List<List<String>> solveNQueens(int n) {
+        List<List<String>> answers = new ArrayList<>();
+        char[][] board = new char[n][n];
+        Set<Integer> cols = new HashSet<>();
+        Set<Integer> posdiag = new HashSet<>();
+        Set<Integer> negdiag = new HashSet<>();
+        for(int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                board[i][j] = '.';
+            }
+        }
+        backtrack(answers, 0, board, cols, posdiag, negdiag);
+        return answers;
+    }
+}
