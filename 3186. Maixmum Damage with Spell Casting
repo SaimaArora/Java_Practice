@@ -1,0 +1,39 @@
+class Solution {
+
+    public long memo(int[] sorted, int ind, HashMap<Integer, Integer> freq, long[] dp) {
+        if (ind >= sorted.length) {
+            return 0;
+        }
+        if(dp[ind]!=-1) return dp[ind];
+        long notTake = memo(sorted, ind + 1, freq, dp);
+        int j = ind;
+        while (j < sorted.length && sorted[ind] + 2 >= sorted[j]) {
+            j++;
+        }
+        int count = freq.get(sorted[ind]);
+        long take = (long)count*sorted[ind] + memo(sorted, j, freq, dp);
+        return dp[ind] = Math.max(take, notTake);
+    }
+
+    public long maximumTotalDamage(int[] power) {
+        HashMap<Integer, Integer> freq = new HashMap<>();
+        int n = power.length, c = 0, ind = 0;
+        
+        for(int i = 0; i < n; i++) {
+            if (!freq.containsKey(power[i])) {
+                c++;
+                freq.put(power[i], 0);
+            }
+            freq.put(power[i], freq.get(power[i]) + 1);
+        }
+        int[] sorted = new int[c];
+        for(int num : freq.keySet()) {
+            sorted[ind++] = num;
+        }
+        Arrays.sort(sorted);
+        long[] dp = new long[c];
+        Arrays.fill(dp, -1L);
+        return memo(sorted, 0, freq, dp);
+
+    }
+}
