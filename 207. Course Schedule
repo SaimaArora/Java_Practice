@@ -1,0 +1,37 @@
+class Solution {
+    
+    public boolean dfsCheckCycle(int ind, List<List<Integer>> adj, int[] path, int[] visited) {
+        visited[ind] = 1;
+        path[ind] = 1;
+        for(int neigh = 0; neigh < adj.get(ind).size(); neigh++) {
+            int neighbour = adj.get(ind).get(neigh);
+            if(visited[neighbour] == 0) {
+                if (dfsCheckCycle(neighbour, adj, path, visited)) return true;
+            }
+            else if (path[neighbour] == 1) {
+                return true;
+            }
+        }
+        path[ind] = 0;
+        return false;
+    }
+
+    public boolean canFinish(int n, int[][] prereq) {
+        List<List<Integer>> adj = new ArrayList<>();
+        int[] visited = new int[n];
+        int[] path = new int[n];
+        for(int i = 0; i < n; i++) {
+            adj.add(new ArrayList<Integer>());
+        }
+        for(int i = 0; i < prereq.length;i++) {
+            int node = prereq[i][0], neigh = prereq[i][1];
+            adj.get(neigh).add(node);
+        }
+        for(int i = 0;i < n; i++) {
+            if (visited[i] == 0) {
+                if(dfsCheckCycle(i, adj, path, visited) == true) return false;
+            }
+        }
+        return true;
+    }
+}
