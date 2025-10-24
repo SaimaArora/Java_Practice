@@ -1,0 +1,30 @@
+
+class Solution {
+
+    private boolean checkBalance(int num) {
+        String str = Integer.toString(num);
+        int len = str.length(), i = 0;
+        int[] freq = new int[10];
+        while(i < len) {
+            int n = Integer.parseInt(str.charAt(i)+"");
+            freq[n]++;
+            if (freq[n] > n) return false;
+            i++;
+        }
+        for(int j = 0;j < len; j++) {
+            int n = Integer.parseInt(str.charAt(j)+"");
+            if (freq[n] != n && freq[n] != 0) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public int nextBeautifulNumber(int n) {
+        n++;
+        while (checkBalance(n) != true) {
+            n++;
+        }
+        return n;
+    }
+}
