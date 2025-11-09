@@ -1,0 +1,17 @@
+class Solution {
+
+    public void formString(int n, int open, int close, String current, List<String> result) {
+        if(current.length() == n * 2) {
+            result.add(current);
+            return;
+        }
+        if (open < n) formString(n, open + 1, close, current + "(", result);
+        if (close < open) formString(n, open, close + 1, current + ")", result);
+    }
+
+    public List<String> generateParenthesis(int n) {
+        List<String> result = new ArrayList<>();
+        formString(n, 0, 0, "", result);
+        return result;
+    }
+}
