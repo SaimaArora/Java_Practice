@@ -1,0 +1,20 @@
+class Solution {
+
+    public void addSubset(int ind, int[] nums, List<List<Integer>> result, List<Integer> temp) {
+        result.add(new ArrayList<>(temp));
+        for(int i = ind; i < nums.length; i++) {
+            if (i > ind && nums[i] == nums[i - 1]) {
+                continue;
+            }
+            temp.add(nums[i]);
+            addSubset(i+1, nums, result, temp);
+            temp.remove(temp.size() - 1);
+        }
+    }
+    public List<List<Integer>> subsetsWithDup(int[] nums) {
+        List<List<Integer>> result = new ArrayList<>();
+        Arrays.sort(nums);
+        addSubset(0, nums, result, new ArrayList<>());
+        return result;
+    }
+}
