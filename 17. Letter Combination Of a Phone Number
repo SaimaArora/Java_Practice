@@ -1,0 +1,22 @@
+class Solution {
+    public void formPhoneString(StringBuilder temp, String digits, int ind, List<String> result,String[] mapping) {
+        if (ind == digits.length()) {
+            result.add(new String(temp));
+            return;
+        }
+        int dig = digits.charAt(ind) - '0';
+        for (int i = 0; i < mapping[dig].length(); i++) {
+            temp.append(mapping[dig].charAt(i));
+            formPhoneString(temp, digits, ind + 1, result, mapping);
+            temp.deleteCharAt(temp.length() - 1);
+        }
+    }
+    public List<String> letterCombinations(String digits) {
+        String[] mapping = {
+            "", "", "abc", "def", "ghi", "jkl", "mno", "pqrs", "tuv", "wxyz"
+        };
+        List<String> result = new ArrayList<>();
+        formPhoneString(new StringBuilder(), digits, 0, result, mapping);
+        return result;
+    }
+}
