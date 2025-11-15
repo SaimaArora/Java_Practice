@@ -1,13 +1,15 @@
 class Solution {
-    public boolean recursion(String s, Set<String> diction) {
-        if(s.isEmpty()) return true;
-        for (int ind = 1; ind <= s.length(); ind++) {
-            String prefix = s.substring(0, ind);
-            String suffix = s.substring(ind);
-            if(diction.contains(prefix) && recursion(suffix, diction)) {
+    public boolean recursion(int start, String s, Set<String> diction, Boolean memo[]) {
+        if(start == s.length()) return true;
+        if (memo[start] != null) return memo[start];
+        for (int end = start + 1; end <= s.length(); end++) {
+            String word = s.substring(start, end);
+            if(diction.contains(word) && recursion(end, s, diction, memo)) {
+                memo[start] = true;
                 return true;
             }
         }
+        memo[start] = false;
         return false;
     }
     public boolean wordBreak(String s, List<String> wordDict) {
@@ -15,6 +17,7 @@ class Solution {
         for(String str : wordDict) {
             diction.add(str);
         }
-        return recursion(s, diction);
+        Boolean[] memo = new Boolean[s.length()];
+        return recursion(0, s, diction, memo );
     }
 }
