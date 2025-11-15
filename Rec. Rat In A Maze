@@ -1,0 +1,27 @@
+private boolean isSafe(int r, int c, boolean[][] visited, int[][] maze) {
+        int rows = visited.length, cols = visited[0].length;
+        return r < rows && c < cols && !visited[r][c] && r >= 0 && c >= 0 && maze[r][c] == 1;
+    }
+    public boolean ratInAMaze(int i, int j, boolean[][] visited, StringBuilder currPath, List<String> result, int[][] maze) {
+        if (i == visited.length - 1 && j == visited[0].length - 1){
+            result.add(new String(currPath));
+        }
+        visited[i][j] = true;
+        //down
+        if (isSafe(i + 1, j, visited, maze) {
+            ratInAMaze(i+1, j, visited, currPath.append("D"), result, maze);
+        }
+        //left
+        if (isSafe(i, j-1, visited, maze) {
+            ratInAMaze(i, j-1, visited, currPath.append("L"), result, maze);
+        }
+        //right
+        if (isSafe(i, j+1, visited, maze) {
+            ratInAMaze(i, j+1, visited, currPath.append("R"), result, maze);
+        }
+        //up
+        if (isSafe(i-1, j, visited, maze) {
+            ratInAMaze(i-1, j, visited, currPath.append("U"), result, maze);
+        }
+        visited[i][j] = false;
+    }
