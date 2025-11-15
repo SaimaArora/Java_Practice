@@ -1,0 +1,20 @@
+class Solution {
+    public boolean recursion(String s, Set<String> diction) {
+        if(s.isEmpty()) return true;
+        for (int ind = 1; ind <= s.length(); ind++) {
+            String prefix = s.substring(0, ind);
+            String suffix = s.substring(ind);
+            if(diction.contains(prefix) && recursion(suffix, diction)) {
+                return true;
+            }
+        }
+        return false;
+    }
+    public boolean wordBreak(String s, List<String> wordDict) {
+        Set<String> diction = new HashSet<>();
+        for(String str : wordDict) {
+            diction.add(str);
+        }
+        return recursion(s, diction);
+    }
+}
