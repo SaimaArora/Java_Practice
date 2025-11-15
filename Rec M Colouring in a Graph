@@ -1,0 +1,18 @@
+    private boolean isSafeM(int node, List<Integer>[] graph, int[] color, int n, int col) {
+        for(int ele : graph[node]){
+            if(color[ele] == col) return false;
+        }
+        return true;
+    }
+
+    public boolean MColouring(int m, int node, List<Integer>[] graph, int n,int color[]){
+        if (n == node) return true;
+        for (int i =  1; i <= m ; i++) {
+            if (isSafeM(node, graph, color, n, i)) {
+                color[node] = i;
+                if (MColouring(m, node + 1, graph, n, color)) return true;
+                color[node] = 0;
+            }
+        }
+        return false;
+    }
