@@ -1,11 +1,14 @@
 class Solution {
+    void recursion(int[] nums, int ind, int val, List<Boolean> res) {
+        if(ind == nums.length) return;
+        val = ((val<<1)+nums[ind])%5;
+        res.add(val==0);
+        recursion(nums, ind+1, val, res);
+        return;
+    }
     public List<Boolean> prefixesDivBy5(int[] nums) {
         List<Boolean> res=  new ArrayList<>();
-        int val = 0;
-        for(int n: nums) {
-            val = ((val<<1)+n) %5;
-            res.add(val == 0);
-        }
+        recursion(nums, 0, 0, res);
         return res;
     }
 }
