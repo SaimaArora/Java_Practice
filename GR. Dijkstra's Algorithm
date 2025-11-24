@@ -1,0 +1,24 @@
+static int[] dijkstra(int v, ArrayList<ArrayList<weights>> adj, int s) {
+        PriorityQueue<weights> pq = new PriorityQueue<>((x, y) -> x.dist - y.dist);
+        int[] distance = new int[v];
+        for (int i = 0; i< distance.length;i++) {
+            distance[i] = Integer.MAX_VALUE;
+        }
+        distance[s] = 0;
+        pq.add(new weights(s, 0));
+
+        while (!pq.isEmpty()) {
+            int dis = pq.peek().dist, val = pq.peek().val;
+            pq.remove();
+            if(dis> distance[val]) continue;
+            for (int i = 0; i < adj.get(val).size(); i++) {
+                weights curr = adj.get(val).get(i);
+                if(curr.dist+dis < distance[curr.val]){
+                    distance[curr.val] = curr.dist+dis;
+                    pq.add(new weights(curr.val, distance[curr.val]));
+                }
+            }
+        }
+
+        return distance;
+    }
