@@ -1,0 +1,15 @@
+    static Integer[] bellmanFord (ArrayList<ArrayList<weights>> adj, int s, int V) {
+        Integer[] distance = new Integer[V];
+        distance[s] = 0;
+        for (int i = 0; i < V - 1; i++) {
+            for (int src = 0; src < V;src++) {
+                for(int v = 0; v < adj.get(src).size(); v++) {
+                    int dest = adj.get(src).get(v).val, dist = adj.get(src).get(v).dist;
+                    if (distance[src] != null && (distance[dest]== null || distance[dest] > distance[src] + dist)) {
+                        distance[dest] = distance[src] + dist;
+                    }
+                }
+            }
+        }
+        return distance;
+    }
