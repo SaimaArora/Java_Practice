@@ -1,0 +1,41 @@
+class Solution {
+    class Node{
+        int row, col, dist;
+        Node (int r, int c, int d) {
+            row = r;
+            col = c;
+            dist = d;
+        } 
+    }
+    private boolean isSafe(int row, int col, int[][] distance, int dist, int[][] grid) {
+        int r = distance.length, c = distance[0].length;
+        boolean flag = row < r && row >=0 && col < c && col >= 0 && dist+1 < distance[row][col] && grid[row][col] == 0;
+        return flag;
+    }
+    public int shortestPathBinaryMatrix(int[][] grid) {
+        if(grid[0][0] == 1) return -1;
+        Queue<Node> q = new LinkedList<>();
+        int[] rows = {0, 1, -1, 0, -1, 1, 1, -1};
+        int[] cols = {-1, 0, 0, 1, 1, -1, 1, -1};
+        int[][] distance = new int[grid.length][grid[0].length];
+        for(int i = 0; i < grid.length; i++) {
+            Arrays.fill(distance[i], Integer.MAX_VALUE);
+        }
+        q.offer(new Node(0, 0, 1));
+        distance[0][0] = 1;
+        while (!q.isEmpty()) {
+            Node curr = q.poll();
+            int currow = curr.row, curcol = curr.col, dist = curr.dist;
+            for (int i = 0; i < 8; i++){
+                int row = rows[i] + currow;
+                int col = cols[i] + curcol;
+                if (isSafe(row, col, distance, dist, grid)) {
+                    q.offer(new Node(row, col, dist+1));
+                    distance[row][col] = dist+1;
+                }
+            }
+        }
+
+        return distance[grid.length-1][grid[0].length-1] == Integer.MAX_VALUE ? -1 : distance[grid.length-1][grid[0].length-1];
+    }
+}
