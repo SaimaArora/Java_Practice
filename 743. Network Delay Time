@@ -1,0 +1,47 @@
+class Solution {
+    class Node{
+        int minDist, val;
+        Node(int dist, int val) {
+            this.minDist = dist;
+            this.val = val;
+        }
+    }
+    class Pair{
+        int to, dist;
+        Pair(int to, int dist) {
+            this.to = to;
+            this.dist = dist;
+        } 
+    }
+    public int networkDelayTime(int[][] times, int n, int k) {
+        PriorityQueue<Node> pq = new PriorityQueue<>((x, y)-> x.minDist - y.minDist);
+        int[] distance = new int[n+1];
+        List<List<Pair>> adj = new ArrayList<>();
+        for(int i = 0; i < n+1; i++) {
+            adj.add(new ArrayList<>());
+        }
+        for(int i = 0; i < times.length; i++){
+            adj.get(times[i][0]).add(new Pair(times[i][1], times[i][2]));
+        }
+        Arrays.fill(distance, Integer.MAX_VALUE);
+        pq.offer(new Node(0, k));
+        distance[k] = 0;
+        distance[0] = 0;
+        while (!pq.isEmpty()) {
+            Node curr = pq.poll();
+            for (Pair neigh : adj.get(curr.val)) {
+                int newDist = curr.minDist + neigh.dist;
+                if(newDist < distance[neigh.to]) {
+                    distance[neigh.to] = newDist;
+                    pq.offer(new Node(newDist, neigh.to));
+                }
+            }
+        }
+        int ans = -1;
+        for(int i = 0; i < distance.length;i++) {
+            if(distance[i] == Integer.MAX_VALUE) return -1;
+            ans = Math.max(ans, distance[i]);
+        }
+        return ans;
+    }
+}
