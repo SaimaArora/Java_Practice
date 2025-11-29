@@ -1,0 +1,51 @@
+class Solution {
+    class Node{
+        long dist;
+        int node;
+        Node(int n, long d) {
+            dist = d;
+            node = n;
+        }
+    }
+    class Pair{
+        int to, dist;
+        Pair(int t, int d) {
+            to = t;
+            dist = d;
+        }
+    }
+    public int countPaths(int n, int[][] roads) {
+        int[] ways = new int[n];
+        long[] distance = new long[n];
+        Arrays.fill(distance, Long.MAX_VALUE);
+        PriorityQueue<Node> pq = new PriorityQueue<>((x, y)-> Long.compare(x.dist, y.dist));
+        ArrayList<ArrayList<Pair>> adj = new ArrayList<>();
+        for (int i = 0; i < n; i++) {
+            adj.add(new ArrayList<>());
+        }
+        for (int i = 0; i < roads.length; i++) {
+            adj.get(roads[i][0]).add(new Pair(roads[i][1], roads[i][2]));
+            adj.get(roads[i][1]).add(new Pair(roads[i][0], roads[i][2]));
+        }
+        pq.offer(new Node(0,0)); 
+        distance[0] = (long)0;
+        ways[0] = 1;
+        while (!pq.isEmpty()) {
+            Node curr = pq.poll();
+            long dist = curr.dist;
+            int val = curr.node;
+            for(Pair neigh : adj.get(val)) {
+                long newDist = dist+neigh.dist;
+                if (newDist < distance[neigh.to]) {
+                    pq.offer(new Node(neigh.to, newDist));
+                    distance[neigh.to] = newDist;
+                    ways[neigh.to] = ways[val];
+                }
+                else if (newDist == distance[neigh.to]) {
+                    ways[neigh.to] = (ways[neigh.to]+ways[val]) % 1000000007;
+                }
+            }
+        }
+        return ways[n - 1];
+    }
+}
