@@ -1,0 +1,35 @@
+// Do not change the class name
+class Result {
+  /* 
+   *  Complete the below function.
+   *  return the count of word in the 2-D board
+   */
+    private static boolean isValid(int i, int j, char[][] board, int index, String word, int m, int n, boolean[][] visited) {
+        return i >= 0 && j >= 0 && i < m && j < n && board[i][j] == word.charAt(index) && !visited[i][j];
+    }
+    public static int backtrack(int i, int j, int index, char[][] board, String word, int m, int n, boolean[][] visited) {
+        if (!isValid(i, j, board, index, word, m, n, visited)) {
+            return 0;
+        }
+        if(index == word.length() - 1) return 1;
+        visited[i][j] = true;
+        int ans = backtrack(i-1, j, index+1, board, word, m, n, visited)+ backtrack(i+1, j, index+1, board, word, m, n, visited)
+                +backtrack(i, j+1, index+1, board, word, m, n, visited)+backtrack(i, j-1, index+1, board, word, m, n, visited); 
+        visited[i][j] = false;
+        return ans;
+    }
+  static int countWord(char board[][], String word, int m, int n) {
+    // Write your code here
+      boolean[][] visited = new boolean[m][n];
+      int ans = 0;
+      for(int i = 0; i < m; i++) {
+          for(int j = 0; j < n ; j++) {
+              if(board[i][j] == word.charAt(0)) {
+                  ans+=backtrack(i, j, 0, board, word, m, n, visited);
+              }
+          }
+      }
+      return ans;
+
+  }
+}
