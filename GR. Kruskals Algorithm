@@ -1,0 +1,33 @@
+
+    static class Edge{
+        int u, v, wt;
+        Edge(int u, int v, int wt){
+            this.u = u;
+            this.v = v;
+            this.wt = wt;
+        }
+    }
+    public int kruskalsAlgorithm (int V, List<List<List<Integer>>> adj){
+        List<Edge> edges = new ArrayList<>();
+        for (int i = 0; i < adj.size(); i++) {
+            for (List<Integer> curr : adj.get(i)) {
+                int v = curr.get(0), wt = curr.get(1);
+                if (i < v) {
+                    edges.add(new Edge(i, v, wt));
+                }
+            }
+        }
+        UnionBySize dsu = new UnionBySize(V);
+        int sum = 0, edgeCount = 0;
+        edges.sort((x, y) -> Integer.compare(x.wt, y.wt);
+        for (Edge curr : edges) {
+            int u = curr.u, v = curr.v, wt = curr.wt;
+            if (dsu.find(u) != dsu.find(v)) {
+                dsu.union(u, v);
+                sum+=wt;
+                edgeCount++;
+                if (edgeCount == V-1) break;
+            }
+        }
+        return sum;
+    }
