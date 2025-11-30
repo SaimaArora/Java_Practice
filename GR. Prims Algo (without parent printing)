@@ -1,0 +1,29 @@
+    class Node{
+        int u, v, wt;
+        Node(int uNode, int vNode, int weight) {
+            u = uNode;
+            v = vNode;
+            wt = weight;
+        }
+    }
+    public void primsAlgo(ArrayList<ArrayList<Node>> adj, int n) {
+        PriorityQueue<Node> pq = new PriorityQueue<>((x, y) -> x.wt - y.wt);
+        int[] visited = new int[n];
+        int sum = 0;
+        Arrays.fill(visited, -1);
+        pq.offer(new Node(-1, 0, 0));
+
+        while (!pq.isEmpty()) {
+            Node curr = pq.poll();
+            if (visited[curr.v] != -1) {
+                continue;
+            }
+            visited[curr.v] = 1;
+            sum+=curr.wt;
+            for (Node neigh : adj.get(curr.v)){
+                if (visited[neigh.v] == -1) {
+                    pq.offer(new Node(neigh.u, neigh.v, neigh.wt));
+                }
+            }
+        }
+    }
