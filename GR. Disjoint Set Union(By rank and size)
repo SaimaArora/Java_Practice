@@ -1,0 +1,101 @@
+
+    class UnionBySize{
+        int[] size;
+        int[] parent;
+        UnionBySize(int n) {
+            size = new int[n+1];
+            parent = new int[n+1];
+            for (int i = 0; i <= n; i++) {
+                size[i] = 1;
+                parent[i] = i;
+            }
+        }
+
+        public int find(int node){
+            if (node == parent[node]) return node;
+            return parent[node] = find(parent[node]);
+        }
+
+        public void union(int u, int v){
+            int par_u = find(u);
+            int par_v = find(v);
+            if (par_u == par_v) {
+                return;
+            }
+            if (size[par_u] < size[par_v]) {
+                parent[par_u] = par_v;
+                size[par_v] +=size[par_u];
+            }
+            else{
+                parent[par_v] = par_u;
+                size[par_u] += size[par_v];
+            }
+        }
+    }
+
+    class UnionByRank{
+        int[] rank;
+        int[] parent;
+        UnionByRank(int n) {
+            rank = new int[n+1];
+            parent = new int[n+1];
+            for (int i = 0; i <= n; i++) {
+                rank[i] = 0;
+                parent[i] = i;
+            }
+        }
+
+        public int find(int node){
+            if (node == parent[node]) return node;
+            return parent[node] = find(parent[node]);
+        }
+
+        public void union(int u, int v){
+            int par_u = find(u);
+            int par_v = find(v);
+            if (par_u == par_v) {
+                return;
+            }
+            if (rank[par_u] < rank[par_v]) {
+                parent[par_u] = par_v;
+            }
+            else if(rank[par_u] > rank[par_v]){
+                parent[par_v] = par_u;
+            }
+            else{
+                parent[par_u] = par_v;
+                rank[par_v]++;
+            }
+        }
+    }
+
+    public class Dsu {
+    public static void main(String[] args) {
+        int n = 7;
+        UnionBySize ds = new UnionBySize(n);
+
+        // --- PHASE 1: Create two separate components ---
+        // Component A: 1 -- 2 -- 3
+        ds.union(1, 2);
+        ds.union(2, 3);
+
+        // Component B: 4 -- 5 -- 6 -- 7
+        ds.union(4, 5);
+        ds.union(6, 7);
+        ds.union(5, 6);
+
+        // --- CHECK 1: Are 3 and 7 connected? ---
+        System.out.println("Are 3 and 7 connected? " + (ds.find(3) == ds.find(7) ? "Yes" : "No"));
+
+        // Connect node 3 (from A) to node 7 (from B)
+        ds.union(3, 7);
+
+        // --- CHECK 2: Are 3 and 7 connected now? ---
+        System.out.println("Are 3 and 7 connected now? " + (ds.find(3) == ds.find(7) ? "Yes" : "No"));
+
+        // --- CHECK 3: Verify the total size of the set ---
+        // Find the root of node 1
+        int root = ds.find(1);
+        System.out.println("Total nodes in the connected component: " + ds.size[root]);
+    }
+}
