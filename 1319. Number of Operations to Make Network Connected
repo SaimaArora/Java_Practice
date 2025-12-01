@@ -1,0 +1,44 @@
+class Solution {
+
+
+    public int find(int n, int[] parent) {
+        if (parent[n] == n) return n;
+        return find(parent[n], parent);
+    }
+    public void union(int u, int v, int[] parent, int[] size) {
+        int par_u = find(u, parent), par_v = find(v, parent);
+        if(par_u == par_v) return;
+        else if (size[par_u] < size[par_v]) {
+            parent[par_u] = par_v;
+            size[par_v] += size[par_u];
+        }
+        else{
+            parent[par_v] = par_u;
+            size[par_u] += size[par_v]; 
+        }
+        return;
+    }
+
+    public int makeConnected(int n, int[][] connections) {
+        int[] parent = new int[n];
+        int[] size = new int[n];
+        Arrays.fill(size, 1);
+        int extra = 0, con_par = 0;
+        for(int i = 0;i  < n; i++) {
+            parent[i] = i;
+        }
+        for(int i = 0; i < connections.length; i++) {
+            int u = connections[i][0], v = connections[i][1];
+            int par_u = find(u, parent), par_v = find(v, parent);
+            if (par_u == par_v) extra++;
+            else{
+                union(u, v, parent, size);
+            }
+        }
+        for(int i = 0; i < n; i++) {
+            if (parent[i] == i) con_par++; 
+        }
+        if(con_par - 1 <= extra) return con_par - 1;
+        return -1;
+    }
+}
