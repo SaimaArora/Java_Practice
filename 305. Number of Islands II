@@ -1,0 +1,33 @@
+public int[] numberofIslandsII(int n, int m, List<int[]> ops) {
+        int k = ops.size();
+        int[] ans = new int[k];
+        int comp = 0;
+        int[] rows = {0, -1, 1, 0};
+        int[] cols = {1, 0, 0, -1};
+        boolean[][] visited = new boolean[n][m];
+        UnionBySize dsu = new UnionBySize(m * n);
+        for(int i = 0; i < k; i++) {
+            int row = ops.get(i)[0];
+            int col = ops.get(i)[1];
+            if (visited[row][col]){
+                ans[i] = comp;
+                continue;
+            }
+            visited[row][col] = true;
+            comp++;
+            for(int ind = 0; ind < 4; ind++) {
+                int newRow = row + rows[ind];
+                int newCol = col + cols[ind];
+                if (newRow < n && newCol < m && newRow >= 0 && newCol >= 0 && visited[newRow][newCol]) {
+                    int adjNode = m * newRow + newCol;
+                    int node = row * m + col;
+                    if (dsu.find(node) != dsu.find(adjNode)) {
+                        dsu.union(node, adjNode);
+                        comp--;
+                    }
+                }
+            }
+            ans[i] = comp;
+        }
+        return ans;
+    }
