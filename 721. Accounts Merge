@@ -1,0 +1,72 @@
+class Solution {
+    class UnionBySize{
+    int[] size;
+    int[] parent;
+    UnionBySize(int n) {
+        size = new int[n+1];
+        parent = new int[n+1];
+        for (int i = 0; i <= n; i++) {
+            size[i] = 1;
+            parent[i] = i;
+        }
+    }
+
+    public int find(int node){
+        if (node == parent[node]) return node;
+        return parent[node] = find(parent[node]);
+    }
+
+    public void union(int u, int v){
+        int par_u = find(u);
+        int par_v = find(v);
+        if (par_u == par_v) {
+            return;
+        }
+        if (size[par_u] < size[par_v]) {
+            parent[par_u] = par_v;
+            size[par_v] +=size[par_u];
+        }
+        else{
+            parent[par_v] = par_u;
+            size[par_u] += size[par_v];
+        }
+    }
+}
+    public List<List<String>> accountsMerge(List<List<String>> accounts) {
+        List<List<String>> result = new ArrayList<>();
+        HashMap<String, Integer> hm = new HashMap<>();
+        int n = accounts.size();
+        UnionBySize dsu = new UnionBySize(accounts.size());
+        for (int i = 0; i < n; i++) {
+            for(int j = 1; j < accounts.get(i).size(); j++){
+                String curr = accounts.get(i).get(j);
+                if (hm.containsKey(curr)) {
+                    dsu.union(i, hm.get(curr));
+                }
+                else{
+                    hm.put(curr, i);
+                }
+            }
+        } 
+        ArrayList<String>[] arr = new ArrayList[n];
+        for (int i = 0; i < n; i++) {
+            arr[i] = new ArrayList<>();
+        }
+        for(Map.Entry<String, Integer> entry : hm.entrySet()) {
+            int node = dsu.find(entry.getValue());
+            String str = entry.getKey();
+            arr[node].add(str);
+        }
+        for(int i = 0; i < n; i++) {
+            if(arr[i].size() == 0) continue;
+            List<String> temp = new ArrayList<>();
+            Collections.sort(arr[i]);
+            temp.add(accounts.get(i).get(0));
+            for(String str : arr[i]){
+                temp.add(str);
+            }
+            result.add(temp);
+        }
+        return result;
+    }
+}
