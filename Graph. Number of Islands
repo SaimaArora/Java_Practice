@@ -1,0 +1,39 @@
+import java.util.*;
+class Result {
+    class Node{
+        int i;
+        int j;
+        Node(int r, int c) {
+            i = r;
+            j = c;
+        }
+    }
+    private static boolean isValid(int i, int j, int[][] mat, int m, int n) {
+        return i >= 0 && j >= 0 && i < m && j < n && mat[i][j] == 1;
+    }
+    static void dfs(int i, int j, int[][] mat, int m, int n, boolean[][] visited) {
+        if (!isValid(i, j, mat, m, n)  || visited[i][j]==true) return ;
+        visited[i][j] = true;
+        int[] rows = {0, 1, -1, 0};
+        int[] cols = {-1, 0, 0, 1};
+        for(int nei = 0; nei < 4; nei++) {
+            dfs(rows[nei]+i, cols[nei] + j, mat, m, n, visited);
+        }
+    }
+    
+  static int countIslands(int mat[][], int m, int n){
+    // Write your code here
+      boolean[][] visited = new boolean[m][n];
+      int count = 0;
+      for(int i = 0; i < m; i++) {
+          for (int j = 0; j < n; j++) {
+              if(mat[i][j] == 1 && visited[i][j] == false) {
+                  dfs(i,j,mat, m, n, visited);
+                  count++;
+              }
+          }
+      }
+      return count;
+      
+  }   
+}
