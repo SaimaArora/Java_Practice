@@ -1,0 +1,24 @@
+class Solution {
+    public List<Boolean> checkIfPrerequisite(int num, int[][] prereq, int[][] queries) {
+        List<Boolean> result = new ArrayList<>();
+        int[][] distance = new int[num][num];
+        for(int i = 0; i < num; i++) Arrays.fill(distance[i], Integer.MAX_VALUE);
+        for(int i = 0; i < prereq.length; i++) {
+            int src = prereq[i][0], dest = prereq[i][1];
+            distance[src][dest] = 0;
+        }
+        for (int inter = 0; inter < num; inter++) {
+            for(int src = 0; src < num; src++) {
+                for(int dest = 0; dest < num; dest++) {
+                    if(distance[src][inter] != Integer.MAX_VALUE && distance[inter][dest]!= Integer.MAX_VALUE)
+                    distance[src][dest] = Math.min(distance[src][dest], distance[src][inter] + distance[inter][dest]);
+                }
+            }
+        }
+        for(int q[]:queries) {
+            if(distance[q[0]][q[1]] == Integer.MAX_VALUE) result.add(false);
+            else result.add(true);
+        }
+        return result;
+    }
+}
