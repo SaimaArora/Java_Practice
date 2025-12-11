@@ -1,0 +1,22 @@
+class Solution {
+    public int maximalNetworkRank(int n, int[][] roads) {
+        boolean[][] connect = new boolean[n][n];
+        int[] degree = new int[n];
+        for(int curr[] : roads) {
+            connect[curr[0]][curr[1]] = true;
+            connect[curr[1]][curr[0]] = true;
+            degree[curr[0]]++;
+            degree[curr[1]]++;
+        }
+        
+        int max = 0;
+        for (int i = 0; i < connect.length; i++) {
+            for (int j = i+1; j < connect.length; j++) {
+                int curr = degree[i] + degree[j];
+                if(connect[i][j]) curr--;
+                max = Math.max(max, curr);
+            }
+        }
+        return max;
+    }
+}
