@@ -1,0 +1,58 @@
+class Graph {
+    class Node implements Comparable<Node>{
+        int val, dist;
+        Node (int v, int d) {
+            val = v;
+            dist = d;
+        }
+        public int compareTo(Node other) {
+            return this.dist - other.dist;
+        }
+    }
+    List<List<Node>> adj;
+    int n;
+    public Graph(int n, int[][] edges) {
+        this.n = n;
+        adj = new ArrayList<>();
+        for(int i = 0; i < n; i++) {
+            adj.add(new ArrayList<>());
+        }
+        for (int curr[] : edges) {
+            addEdge(curr);
+        }
+    }
+    
+    public void addEdge(int[] edge) {
+        adj.get(edge[0]).add(new Node(edge[1], edge[2]));
+    }
+    
+    
+    public int shortestPath(int node1, int node2) {
+        PriorityQueue<Node> pq = new PriorityQueue<>((a, b)-> a.dist - b.dist);
+        pq.offer(new Node(node1, 0));
+        int[] distance = new int[this.n];
+        Arrays.fill(distance, Integer.MAX_VALUE);
+        distance[node1] = 0;
+        while (!pq.isEmpty()) {
+            Node curr = pq.remove();
+            int dist = curr.dist, val = curr.val;
+            if(distance[val] < dist) {
+                continue;
+            }
+            for (Node n : adj.get(val)) {
+                if(n.dist + distance[val] < distance[n.val]){
+                    distance[n.val] = distance[val] + n.dist;
+                    pq.offer(new Node(n.val, distance[n.val]));
+                }
+            }
+        }
+        return distance[node2] == Integer.MAX_VALUE ? -1 : distance[node2];
+    }
+}
+
+/**
+ * Your Graph object will be instantiated and called as such:
+ * Graph obj = new Graph(n, edges);
+ * obj.addEdge(edge);
+ * int param_2 = obj.shortestPath(node1,node2);
+ */
