@@ -1,0 +1,37 @@
+class Solution {
+    public void dfs(int timer, int curr, int parent, int[] visited, int[] low, int[] discovery, List<List<Integer>> adj, List<List<Integer>> bridges) {
+        visited[curr] = 1;
+        low[curr] = discovery[curr] = timer++;
+        for(int neigh : adj.get(curr)) {
+            if(neigh==parent) continue;
+            if(visited[neigh] == 0) {
+                dfs(timer, neigh, curr, visited, low, discovery, adj, bridges);
+                low[curr] = Math.min(low[curr], low[neigh]);
+                if (low[neigh] > discovery[curr]) {
+                    bridges.add(Arrays.asList(neigh, curr));
+                }
+            } else {
+                low[curr] = Math.min(low[curr], low[neigh]);
+            }
+        }
+    }
+    public List<List<Integer>> criticalConnections(int n, List<List<Integer>> connections) {
+        int[] visited = new int[n];
+        int[] low = new int[n];
+        int[] discovery = new int[n];
+        Arrays.fill(low, Integer.MAX_VALUE);
+        Arrays.fill(discovery, -1);
+        List<List<Integer>> bridges = new ArrayList<>();
+        List<List<Integer>> adj = new ArrayList<>();
+        for(int i =0; i < n; i++) {
+            adj.add(new ArrayList<>());
+        }
+        for(List<Integer> ind : connections) {
+            int u = ind.get(0), v = ind.get(1);
+            adj.get(u).add(v);
+            adj.get(v).add(u);
+        }
+        dfs(0, 0, -1, visited, low, discovery, adj, bridges);
+        return bridges;
+    }
+}
