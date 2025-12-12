@@ -1,0 +1,86 @@
+class Solution {
+
+    class Dsu{
+        int[] parent;
+        int[] size;
+
+        Dsu(int n){
+            parent = new int[n];
+            size = new int[n];
+            for (int i = 0; i < n; i++) {
+                parent[i] = i;
+                size[i] = 1;
+            }
+        }
+        public int find(int child) {
+            if(parent[child] == child) return child;
+            return parent[child] = find(parent[child]);
+        }
+
+        public void union(int u, int v) {
+            int par_u = find(u);
+            int par_v = find(v);
+            if(par_u == par_v) return;
+            if(size[par_u] >= size[par_v]) {
+                size[par_u] += size[par_v];
+                parent[par_v] = par_u;
+            } else {
+                size[par_v] += size[par_u];
+                parent[par_u] = par_v;
+            }
+        }
+    }
+
+    private boolean isValid(int r, int c, int[][] grid) {
+        return r < grid.length && c < grid.length && r >= 0 && c >= 0;
+    }
+    
+    public int largestIsland(int[][] grid) {
+        
+        int[] rows ={0, -1, 0, 1};
+        int[] cols = {-1, 0, 1, 0};
+        int n = grid.length;
+        Dsu dsu = new Dsu(n*n);
+        for(int i = 0; i < n; i++) {
+            for(int j = 0; j < n; j++) {
+                if(grid[i][j] == 0) continue;
+                int node = i * n + j;
+                for(int ind = 0; ind < 4; ind++) {
+                    if(rows[ind]== -1  || cols[ind] == -1) continue;
+                    int new_r = rows[ind] + i, new_c = cols[ind] + j;
+                    int adjnode = new_r * n + new_c;
+                    if(isValid(new_r, new_c, grid) && grid[new_r][new_c] == 1) {
+                        dsu.union(node, adjnode);
+                    }
+                }
+            }
+        }
+
+        int maxAns = 0;
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                if(grid[i][j] != 0) continue;
+                Set<Integer> set = new HashSet<>();
+                for(int ind = 0; ind < 4; ind++) {
+                    int new_r = rows[ind] + i, new_c = cols[ind] + j;
+                    if(isValid(new_r, new_c, grid) && grid[new_r][new_c] == 1) {
+                        int adjnode = new_r * n + new_c;
+                        int par = dsu.find(adjnode);
+                        set.add(dsu.find(adjnode));
+                    }
+                }
+                int total = 1;
+                for(int num : set) {
+                    total += dsu.size[num];
+                }
+                if(total > maxAns) {
+                    maxAns = total;
+                }
+            }
+        }
+        for(int num : dsu.size) {
+            maxAns = Math.max(num, maxAns);
+        }
+        return maxAns;
+    }
+}
