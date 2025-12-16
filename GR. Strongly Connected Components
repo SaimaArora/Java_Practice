@@ -1,0 +1,101 @@
+import java.util.Arrays;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Stack;
+
+class StronglyConnectedComponent{
+    List<List<Integer>> adj;
+    List<List<Integer>> revAdj;
+    StronglyConnectedComponent(int n) {
+        adj = new ArrayList<>();
+        revAdj = new ArrayList<>();
+        for(int i = 0; i < n; i++) {
+            adj.add(new ArrayList<>());
+            revAdj.add(new ArrayList<>());
+        }
+    }
+    public void addEdge(int node, int e) {
+        adj.get(node).add(e);
+        revAdj.get(e).add(node);
+    }
+
+    public void dfsOnReverse(int node, boolean[] visited, List<Integer> currComponent) {
+        visited[node] = true;
+        currComponent.add(node);
+        for (int neighbour : revAdj.get(node)) {
+            if(!visited[neighbour]) {
+                dfsOnReverse(neighbour, visited, currComponent);
+            }
+        }
+    }
+
+    private void dfs(int node, boolean[] visited, Stack<Integer> stack) {
+        visited[node] = true;
+        for(int neighbour : adj.get(node)) {
+            if(!visited[neighbour]) {
+                dfs(neighbour, visited, stack);
+            }
+        }
+        stack.push(node);
+    }
+    public List<List<Integer>> printSCC(int n) {
+        Stack<Integer> stack = new Stack<>();
+        List<List<Integer>> result = new ArrayList<>();
+        boolean[] visited = new boolean[n];
+        for(int i = 0; i < n; i++) {
+            if(!visited[i]) dfs(i, visited, stack);
+        }
+        Arrays.fill(visited, false);
+        while (!stack.isEmpty()) {
+            int node = stack.pop();
+            if (!visited[node]) {
+                List<Integer> component = new ArrayList<>();
+                dfsOnReverse(node, visited, component);
+                result.add(component);
+            }
+        }
+        return result;
+    }
+}
+public class Graph2 {
+
+
+    public static void main(String[] args) {
+        int n = 5;
+        StronglyConnectedComponent graph = new StronglyConnectedComponent(n);
+
+        graph.addEdge(1, 0);
+        graph.addEdge(0, 2);
+        graph.addEdge(2, 1);
+        graph.addEdge(0, 3);
+        graph.addEdge(3, 4);
+
+        // only cycle - 0->1->2->3->4->0
+        // no cycle 0->1->2->3->4
+        // disconnected graph 0->1->0 2->3->4->2
+        // star - mother vertex 0->1, 0->2, 0->3, 0->4
+
+        StronglyConnectedComponent graph2 = new StronglyConnectedComponent(n);
+        graph2.addEdge(0, 1);
+        graph2.addEdge(1, 2);
+        graph2.addEdge(2, 3);
+        graph2.addEdge(3, 4);
+//        graph2.addEdge(4, 0);
+
+        StronglyConnectedComponent graph3 = new StronglyConnectedComponent(n);
+        graph3.addEdge(0, 1);
+        graph3.addEdge(0, 2);
+        graph3.addEdge(0, 3);
+        graph3.addEdge(0, 4);
+
+
+        List<List<Integer>> result = graph3.printSCC(n);
+        for(int i = 0; i < result.size(); i++) {
+            for(int node : result.get(i)) {
+                System.out.print(node + " ");
+            }
+            System.out.println();
+        }
+    }
+
+}
