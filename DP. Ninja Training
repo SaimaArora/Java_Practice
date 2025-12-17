@@ -1,0 +1,22 @@
+   
+    public int ninjaTraining(int[][] points, int today, int last, int[][] dp) {
+        if (today == 0) {
+            int maxPoints = 0;
+            for(int i = 0; i < 3; i++) {
+                if (i != last) {
+                    maxPoints = Math.max(maxPoints, points[today][i]);
+                }
+            }
+            return maxPoints;
+        }
+        
+        if (dp[today][last] != -1) return dp[today][last];
+        int maxPoints = 0;
+        for (int i = 0; i < 3; i++) {
+            if (i == last) continue;
+            int point = points[today][i] + ninjaTraining(points, today - 1, i, dp);
+            maxPoints = Math.max(maxPoints, point);
+        }
+        return dp[today][last] = maxPoints;
+    }
+
