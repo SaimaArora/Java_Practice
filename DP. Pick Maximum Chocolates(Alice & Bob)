@@ -1,0 +1,26 @@
+
+    public static int recursion(int row, int ac, int bc, int[][] grid) {
+        int n = grid.length, m = grid[0].length;
+        if (ac < 0 || bc < 0 || ac >= m || bc >= m) return -1 *(int) Math.pow(10, 9);
+        if (row == n - 1) {
+            if (ac == bc) return grid[row][ac];
+            return grid[row][ac] + grid[row][bc];
+        }
+        int maxAns = Integer.MIN_VALUE;
+        int curr = (ac == bc)? grid[row][ac] : grid[row][ac] + grid[row][bc];
+        for(int idxa = -1; idxa < 2; idxa++) {
+            for (int idxb = -1; idxb < 2; idxb++) {
+                int ans = curr + recursion(row+1, ac+idxa, bc+idxb, grid);
+                // SPY on the critical move
+                if (row == 0 && ac == 0 && bc == 3) {
+                    System.out.println("Move: A->" + idxa + ", B->" + idxb + " | Result: " + ans);
+                }
+                maxAns = Math.max(ans, maxAns);
+            }
+        }
+        return maxAns;
+    }
+    //alice - 0, 0 and bob - 0, m-1 (n*m matrix)
+    public static int noOfChocolates(int[][] grid) {
+        return recursion(0, 0, grid[0].length - 1, grid);
+    }
