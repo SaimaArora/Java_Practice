@@ -1,28 +1,39 @@
+import java.util.*;
+
 class Solution {
-    public boolean tabulationSum(int[] arr,int target,int index){
-        int n=arr.length;
-        boolean[][] dp=new boolean[n][target+1];
-        for(int i=0;i<arr.length;i++){
-            dp[i][0]=true;
+
+    boolean memoized(int[] nums, int total, int ind, int curr, int[][] dp) {
+        if (curr == total / 2) return true;
+        if (ind == nums.length || curr > total / 2) return false;
+        if (dp[ind][curr] != -1) {
+            return dp[ind][curr] == 1;
         }
-        if(arr[0]<=target) dp[0][arr[0]]=true;
-        for(int ind=1;ind<arr.length;ind++) {
-            for(int tar=1;tar<=target;tar++){
-                boolean notTake=dp[ind-1][tar];
-                boolean take=false;
-                if(tar>=arr[ind])
-                take=dp[ind-1][tar-arr[ind]];
-                dp[ind][tar]=take || notTake;
-            }
-        }
-        return dp[n-1][target];
+        boolean take = memoized(nums, total, ind + 1, curr + nums[ind], dp);
+        boolean notTake = memoized(nums, total, ind + 1, curr, dp);
+        boolean choice = take || notTake;
+        dp[ind][curr] = choice ? 1 : 0;
+
+        return choice;
+    }
+    
+    boolean recursion(int[] nums, int total, int ind, int curr) {
+        if (curr == total / 2) return true;
+        if (ind == nums.length || curr > total / 2) return false;
+        boolean take = recursion(nums, total, ind + 1, curr + nums[ind]);
+        boolean notTake = recursion(nums, total, ind + 1, curr);
+        return take || notTake;
     }
 
     public boolean canPartition(int[] nums) {
-        int sum=0;
-        int n=nums.length;
-        for(int num:nums) sum+=num;
-        if(sum%2!=0) return false;
-        else return tabulationSum(nums,sum/2,n-1);
+        int total = 0;
+        for (int x : nums) total += x;
+        if (total % 2 != 0) return false;
+        int target = total / 2;
+        int[][] dp = new int[nums.length][target + 1];
+
+        for (int i = 0; i < nums.length; i++) {
+            Arrays.fill(dp[i], -1);
+        }
+        return memoized(nums, total, 0, 0, dp);
     }
 }
