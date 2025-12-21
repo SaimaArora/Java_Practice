@@ -1,0 +1,27 @@
+    public static int memoCountSubsetSum(int ind,int sum,int[] arr,int[][] dp){
+        if(sum==0) return 1;
+        if(ind==0) return arr[0]==sum?1:0;
+        if(dp[ind][sum]!=-1){
+            return dp[ind][sum];
+        }
+        int notTake=memoCountSubsetSum(ind-1,sum,arr,dp);
+        int take=0;
+        if(arr[ind]<=sum) take=memoCountSubsetSum(ind-1,sum-arr[ind],arr,dp);
+        dp[ind][sum]=take+notTake;
+        return take+notTake;
+    }
+
+public int tabulationSubsetCount(int[] arr, int sum) {
+        int[][] dp = new int[arr.length][sum+1];
+        dp[0][0] = 1;
+        if(arr[0] <= sum) dp[0][arr[0]] = 1;
+        for(int i = 1; i < arr.length;i++) {
+            for(int curr =0; curr <= sum; curr++) {
+                int notTake=dp[i - 1][curr];
+                int take=0;
+                if(arr[i]<=curr) take=dp[i - 1][curr - arr[i]];
+                dp[i][curr]=take+notTake;
+            }
+        }
+        return dp[arr.length - 1][sum];
+    }
