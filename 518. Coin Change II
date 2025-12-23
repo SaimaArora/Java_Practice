@@ -1,5 +1,15 @@
 class Solution {
 
+     public int memo(int i, int amt, int[] coins, int[][] dp) {
+        if(i == coins.length && amt != 0) return 0;
+        if(amt == 0) return 1;
+        if (dp[i][amt] != -1) return dp[i][amt];
+        int notTake = memo(i+1, amt, coins, dp);
+        int take = 0;
+        if(amt>=coins[i]) take = memo(i, amt - coins[i], coins, dp);
+        return dp[i][amt] = notTake + take;
+    }
+
     public int recursion(int i, int amt, int[] coins) {
         if(i == coins.length) return 0;
         if(amt == 0) return 1;
@@ -11,7 +21,10 @@ class Solution {
     }
 
     public int change(int amount, int[] coins) {
-        
-        return recursion(0, amount, coins);
+        int[][] dp = new int[coins.length][amount + 1];
+        for(int i = 0; i < coins.length; i++) {
+            Arrays.fill(dp[i], -1);
+        }
+        return memo(0, amount, coins, dp);
     }
 }
