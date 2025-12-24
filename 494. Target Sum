@@ -1,0 +1,23 @@
+class Solution {
+    public int recursion(int ind, int[] nums, int target, int[][] memo) {
+        if(ind == nums.length) return target == 0 ? 1: 0;
+        if (memo[ind][target] != -1) return memo[ind][target];
+        int notTake = recursion(ind+1, nums, target, memo);
+        int take = 0;
+        if(nums[ind] <= target) 
+        take = recursion(ind+1, nums, target - nums[ind], memo);
+        return memo[ind][target] = take + notTake;
+    }
+    public int findTargetSumWays(int[] nums, int target) {
+        int total = 0;
+        for(int n : nums) total+=n;
+        if (Math.abs(target) > total || (target + total) % 2 != 0) {
+            return 0;
+        }
+
+        int subsetTarget = (target + total) / 2;
+        int[][] memo = new int[nums.length][subsetTarget + 1];
+        for (int[] row : memo) Arrays.fill(row, -1);
+        return recursion(0, nums, subsetTarget, memo);
+    }
+}
