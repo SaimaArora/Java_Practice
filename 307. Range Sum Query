@@ -1,0 +1,69 @@
+class NumArray {
+
+    int[] nums;
+    int[] segment;
+    public NumArray(int[] nums) {
+        segment = new int[4 * nums.length];
+        this.nums = nums;
+        int idx = 0;
+        build(idx, 0, nums.length - 1);
+    }
+
+    private void build(int idx, int left, int right) {
+        if (left == right) {
+            segment[idx] = nums[left];
+            return;
+        }
+        int mid = (left + right) / 2;
+        build(2 * idx + 1, left, mid);
+        build(2 * idx + 2, mid + 1, right);
+        segment[idx] = segment[2 * idx + 1] + segment[2 * idx + 2];
+    }
+    
+    public void update(int index, int val) {
+        nums[index] = val;
+        update(0, 0, nums.length - 1, index, val);
+    }
+
+    private void update(int idx, int st, int end, int pos, int val) {
+        if (st == end) {
+            segment[idx] = val;
+            return;
+        }
+        int mid = (st + end) / 2;
+        if (pos <= mid) {
+            update(2 * idx + 1, st, mid, pos, val);
+        }
+        else {
+            update(2 * idx + 2, mid + 1, end, pos, val);
+        }
+        segment[idx] = segment[2 * idx + 1] + segment[2 * idx + 2];
+    }
+    
+    public int sumRange(int left, int right) {
+        return query(0, 0, nums.length - 1, left, right);
+    }
+
+    private int query(int idx, int st, int end, int left, int right) {
+        //no overlap - st end left right or left right st end
+        if (end < left || right < st) {
+            return 0;
+        }
+        //complete overlap - left st end right
+        if (st >= left && right >= end) {
+            return segment[idx];
+        }
+        //partial overlap
+        int mid = (st + end) / 2;
+        int l = query(2 * idx + 1, st, mid, left, right);
+        int r = query(2 * idx + 2, mid + 1, end, left, right);
+        return l + r;
+    }
+}
+
+/**
+ * Your NumArray object will be instantiated and called as such:
+ * NumArray obj = new NumArray(nums);
+ * obj.update(index,val);
+ * int param_2 = obj.sumRange(left,right);
+ */
