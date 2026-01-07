@@ -1,0 +1,50 @@
+class RangeFreqQuery {
+
+    Map<Integer, List<Integer>> freq;
+    public RangeFreqQuery(int[] arr) {
+        freq = new HashMap<>();
+        for(int i = 0; i < arr.length; i++) {
+            freq.putIfAbsent(arr[i], new ArrayList<>());
+            freq.get(arr[i]).add(i);
+        }
+    }
+    private int checkUpper(int limit, List<Integer> curr) {
+        int l = 0, r = curr.size();
+        while(l < r) {
+            int mid = (l + r) / 2;
+            if(curr.get(mid) > limit) {
+                r = mid;
+            }
+            else {
+                l = mid + 1;
+            }
+        }
+        return l;
+    }
+    private int checkLower(int limit, List<Integer> curr) {
+        int l = 0, r = curr.size();
+        while(l < r) {
+            int mid = (l + r) / 2;
+            if(curr.get(mid) >= limit) {
+                r = mid;
+            }
+            else {
+                l = mid + 1;
+            }
+        }
+        return l;
+    }
+    public int query(int left, int right, int value) {
+        if (!freq.containsKey(value)) return 0;
+        List<Integer> curr = freq.get(value);
+        int l = checkLower(left, curr);
+        int r = checkUpper(right, curr);
+        return r - l;
+    }
+}
+
+/**
+ * Your RangeFreqQuery object will be instantiated and called as such:
+ * RangeFreqQuery obj = new RangeFreqQuery(arr);
+ * int param_1 = obj.query(left,right,value);
+ */
