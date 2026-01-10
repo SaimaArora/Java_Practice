@@ -10,3 +10,28 @@
         }
         return pq.poll();
     }
+
+    // lps - longest prefix suffix - longest prefix that is also a suffix
+    public void longestprefixsuffix(String str) {
+        String s = " " + str;
+        int n = s.length();
+        int[] pi = new int[n];
+        int i = 2, j = 0;
+        while(i < n) {
+            if(s.charAt(i) == s.charAt(j+1)) {
+                j++;
+                pi[i] = j;
+                i++;
+            }
+            else{
+                if(j > 0) {
+                    j = pi[j];
+                }
+                else{
+                    pi[i] = 0;
+                    i++;
+                }
+            }
+        }
+        System.out.println(pi[n - 1]);
+    }
