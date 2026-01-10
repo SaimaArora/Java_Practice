@@ -1,0 +1,12 @@
+
+    public int candiesSelect(int[] candy, int n) {
+        PriorityQueue<Integer> pq = new PriorityQueue<>();
+        for(int can : candy) {
+            pq.offer(can);
+        }
+        while (pq.size() > 1) {
+            int one = pq.poll(), two = pq.poll();
+            pq.offer(one+two);
+        }
+        return pq.poll();
+    }
