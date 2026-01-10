@@ -54,3 +54,25 @@
             return Math.max(first, second);
         }
     }
+
+
+    private void recursion(int[][] maze, int r, int c, int n, String path, List<String> paths) {
+        if(r >= n || c >= n || maze[r][c] == 0) {
+            return;
+        }
+        if(r == n - 1 && c == n - 1) {
+            paths.add(path);
+        }
+        //right
+        recursion(maze, r, c+1, n, path + "R", paths);
+        //down
+        recursion(maze, r+1, c, n, path+"D", paths);
+
+    }
+    public List<String> ratInMaze(int[][] maze) {
+        int n = maze.length;
+        List<String> result = new ArrayList<>();
+
+        if(maze[0][0] == 1) recursion(maze, 0, 0, n, "", result);
+        return result;
+    }
