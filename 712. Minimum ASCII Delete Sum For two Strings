@@ -1,0 +1,37 @@
+class Solution {
+    private int recursion(int i, int j, String s1, String s2, int[][] dp) {
+        if(i == s1.length() && j == s2.length()) return dp[i][j] = 0;
+        if(i == s1.length() && j < s2.length()) {
+            int sum = 0;
+            for(int c = j; c< s2.length();c++) {
+                sum+=(int)s2.charAt(c);
+            }
+            return dp[i][j] =sum;
+        }
+        if(j == s2.length() && i < s1.length()) {
+            int sum = 0;
+            for(int c = i; c< s1.length();c++) {
+                sum+=(int)s1.charAt(c);
+            }
+            return dp[i][j] = sum;
+        }
+        if(dp[i][j] != -1) return dp[i][j];
+        if (s1.charAt(i) == s2.charAt(j)) {
+            return dp[i][j] = 0 + recursion(i+1, j+1, s1, s2, dp);
+        }
+        else{
+            int opt1 = (int)s1.charAt(i) + recursion(i+1, j, s1, s2, dp);
+            int opt2 = (int)s2.charAt(j) + recursion(i, j+1, s1, s2, dp);
+            return dp[i][j] = Math.min(opt1, opt2);
+        }
+    }
+    public int minimumDeleteSum(String s1, String s2) {
+        int n1 = s1.length(), n2 = s2.length();
+        int[][] dp = new int[n1+1][n2+1];
+        for(int i = 0; i < dp.length; i++) {
+            Arrays.fill(dp[i], -1);
+        }
+        return recursion(0, 0, s1, s2, dp);
+        
+    }
+}
