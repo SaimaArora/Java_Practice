@@ -1,0 +1,35 @@
+class Solution {
+    public String minWindow(String s, String t) {
+        if (s.length() < t.length()) return "";
+        int l = 0, r = 0;
+        HashMap<Character, Integer> got = new HashMap<>();
+        HashMap<Character, Integer> need = new HashMap<>();
+        for (char ch : t.toCharArray()) {
+            need.put(ch, need.getOrDefault(ch, 0) + 1);
+        }
+        int formed = 0, required = need.size(), minAns = Integer.MAX_VALUE, start = 0;
+        while(r < s.length()) {
+            char ch = s.charAt(r);
+            got.put(ch, got.getOrDefault(ch, 0) + 1);
+            if(need.containsKey(ch) && got.get(ch).equals(need.get(ch))) {
+                formed++;
+            }
+            //shrink
+            while(l <= r && formed == required) {
+                if(r - l +1 < minAns) {
+                    minAns = r - l+1;
+                    start = l;
+                }
+                char rem = s.charAt(l);
+                got.put(rem, got.get(rem) - 1);
+                if(need.containsKey(rem) && got.get(rem) < need.get(rem)){
+                    formed--;
+                }
+                l++;
+            }
+            r++;
+        }
+        return minAns == Integer.MAX_VALUE ? "" : s.substring(start, start + minAns);
+
+    }
+}
