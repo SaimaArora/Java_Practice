@@ -1,0 +1,26 @@
+class Solution {
+    private int recursion(int ind1, int ind2, String w1, String w2, int[][] dp) {
+        if(ind1 == w1.length()) {
+            return w2.length() - ind2;
+        }
+        if(ind2 == w2.length()) {
+            return w1.length() - ind1;
+        }
+        if(dp[ind1][ind2] != -1) return dp[ind1][ind2];
+
+        if(w1.charAt(ind1) == w2.charAt(ind2)) {
+            return dp[ind1][ind2] = recursion(ind1+1, ind2+1, w1, w2, dp);
+        }
+        int insert = recursion(ind1, ind2+1, w1, w2, dp);
+        int delete = recursion(ind1+1, ind2, w1, w2, dp);
+        int replace = recursion(ind1+1, ind2+1, w1, w2, dp);
+        return dp[ind1][ind2] = 1 + Math.min(insert, Math.min(delete, replace));
+    }
+    public int minDistance(String word1, String word2) {
+        int[][] dp = new int[word1.length()][word2.length()];
+        for(int[] curr : dp) {
+            Arrays.fill(curr, -1);
+        }
+        return recursion(0, 0, word1, word2, dp);
+    }
+}
