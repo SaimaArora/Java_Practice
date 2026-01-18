@@ -1,0 +1,30 @@
+
+    private List<Integer> kahnAlgo(int[][] graph) {
+        int n = graph.length;
+        List<Integer> list = new ArrayList<>();
+        Queue<Integer> q = new LinkedList<>();
+        int[] indeg = new int[n];
+        for(int i = 0; i < n; i++){
+            for(int j = 0; j < graph[i].length; j++) {
+                int ind = graph[i][j];
+                indeg[ind]++;
+            }
+        }
+        for(int i = 0; i < indeg.length; i++) {
+            if(indeg[i] == 0){
+                q.offer(i);
+            }
+        }
+        while(!q.isEmpty()) {
+            int num = q.poll();
+            list.add(num);
+            for(int i = 0; i < graph[num].length; i++) {
+                indeg[graph[num][i]]--;
+                if (indeg[graph[num][i]] == 0) q.offer(graph[num][i]);
+            }
+        }
+        if(list.size() != n) {
+            return new ArrayList<>();
+        }
+        return list;
+    }
