@@ -1,50 +1,41 @@
 class Solution {
-    //divide it in left&right half
-    public void recursion(int ind, int sum, int count, int[] nums, List<Integer>[] half, int limit) {
-        if(ind == limit){ half[count].add(sum); return;} 
-        recursion(ind+1, sum+nums[ind], count+1, nums, half, limit);
-        recursion(ind+1, sum, count, nums, half, limit);
+    private void generateSums(int curr, int limit, int sum, int count, int total, List<Integer>[] map, int[] nums) {
+        if(count > total) return;
+        if(curr == limit) {
+            map[count].add(sum);
+            return;
+        }
+        generateSums(curr+1, limit, sum + nums[curr], count+1, total, map, nums);
+        generateSums(curr+1, limit, sum, count, total, map, nums);
     }
-    // dp recur wont work as 2^2n is too big tc
     public int minimumDifference(int[] nums) {
-        int n = nums.length/2;
-        int total = 0;
-        for(int num : nums) total+=num;
-        int halfSum = total/2;
-        List<Integer>[] left = new ArrayList[n+1];
-        List<Integer>[] right = new ArrayList[n+1];
-        for(int i= 0; i <= n; i++){
+        int total = 0, n = nums.length / 2 ;
+        for(int num : nums) total+= num;
+        List<Integer>[] left = new ArrayList[n + 1];
+        List<Integer>[] right = new ArrayList[n + 1];
+        for(int i = 0; i < n+1; i++) {
             left[i] = new ArrayList<>();
             right[i] = new ArrayList<>();
         }
-        recursion(0, 0, 0, nums, left, n);
-        recursion(n, 0, 0, nums, right, nums.length);
-        int answer = Integer.MAX_VALUE;
-        for(int count = 0; count <= n; count++) {
-            Collections.sort(right[n - count]);
-            for(int lsum : left[count]) {
-                int rsum = search(right[n - count], halfSum - lsum);
-                int currSum = lsum + rsum;
-                answer = Math.min(answer, Math.abs((total - currSum) - currSum));
+        generateSums(0, n, 0, 0, n, left, nums);
+        generateSums(n, nums.length, 0, 0, n, right, nums);
+        int minDiff = Integer.MAX_VALUE;
+        int target = total / 2;
+        for(int i = 0; i < left.length; i++) {
+            int r = n - i;
+            TreeSet<Integer> rightSet = new TreeSet<>(right[r]);
+            for(int sumLeft : left[i]) {
+                int needed = target - sumLeft;
+                Integer small = rightSet.floor(needed);
+                Integer large = rightSet.ceiling(needed);
+                if(small != null) {
+                    minDiff = Math.min(minDiff, Math.abs(total - 2 * (small + sumLeft)));
+                }
+                if (large != null) {
+                    minDiff = Math.min(minDiff, Math.abs(total - 2 * (large + sumLeft)));
+                }
             }
         }
-        return answer;
-    }
-    private int search(List<Integer> right, int target) {
-        int l = 0, r = right.size() - 1;
-        while(l <= r) {
-            int mid = l + (r - l) / 2;
-            if(right.get(mid) == target) return right.get(mid);
-            else if (right.get(mid) > target) {
-                r = mid - 1;
-            }
-            else{
-                l = mid + 1;
-            }
-        }
-        if(l == 0) return right.get(0);
-        if(l == right.size()) return right.get(right.size()-1);
-        if(Math.abs(right.get(l) - target) < Math.abs(right.get(l - 1) - target)) return right.get(l);
-        else return right.get(l - 1); 
+        return minDiff;
     }
 }
