@@ -1,0 +1,45 @@
+class Solution {
+
+    class Segment{
+        int[] seg;
+        int n;
+        Segment(int range) {
+            n = range;
+            seg = new int[4*range];
+        }
+        public void update(int ind, int low, int high, int pos) {
+            if(low == high) {
+                seg[ind]++;
+                return;
+            }
+            int mid = (low+high)/2;
+            if (pos <= mid) update(2*ind+1, low, mid, pos);
+            else update(2*ind+2, mid+1, high, pos);
+            seg[ind] = seg[2*ind+1] + seg[2*ind+2];
+        }
+        public int query(int ind, int low, int high, int left, int right) {
+            if(left> high || right < low) {
+                return 0;
+            }
+            if(low>= left && high<= right) {
+                return seg[ind];
+            }
+            int mid = (low+high)/2;
+            return query(2*ind+1, low, mid, left, right) + query(2*ind+2, mid+1, high, left, right);
+        }
+    }
+    public List<Integer> countSmaller(int[] nums) {
+        int off = 10001, range = 20002;
+        Segment st = new Segment(range);
+        Integer[] res = new Integer[nums.length];
+        for(int i = nums.length - 1; i >= 0; i--) {
+            int shifted = nums[i] + off;
+            int n = st.query(0, 0, range, 0, shifted - 1);
+            res[i] = n;
+            st.update(0, 0, range, shifted);
+        }
+        return Arrays.asList(res);
+
+        
+    }
+}
