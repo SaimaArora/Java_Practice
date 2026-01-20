@@ -1,0 +1,42 @@
+class Solution {
+    static int[] tree;
+    int n = 100001; //tree is 4n
+    int Ans = 0;
+    
+    private void update(int ind, int low, int high, int pos, int val) {
+        if(low == high) {
+            tree[ind] = val;
+            return;
+        }
+        int mid = (low+high)/2;
+        if(pos <= mid) update(2*ind+1, low, mid, pos, val);
+        else update(2*ind+2, mid+1, high, pos, val);
+        tree[ind] = Math.max(tree[2*ind+1], tree[2*ind+2]);
+    }
+
+    private int query(int ind, int low, int high, int left, int right) {
+        //no overlap
+        if(right < low || high < left) return 0;
+        //complete overlap
+        if (low >= left && high <= right) {
+            return tree[ind];
+        }
+        int mid = (low+high) / 2;
+        int l = query(2*ind+1, low, mid, left, right);
+        int r = query(2*ind+2, mid+1, high, left, right);
+        return Math.max(l, r);
+    }
+
+    public int lengthOfLIS(int[] nums, int k) {
+        this.tree = new int[n*4];
+
+        for(int num : nums) {
+            int start = Math.max(1, num - k);
+            int end = num - 1;
+            int res = query(0, 0, n - 1, start, end);
+            update(0, 0, n -1, num, res+1);
+            Ans = Math.max(Ans, res+1);
+        }
+        return Ans;
+    }
+}
