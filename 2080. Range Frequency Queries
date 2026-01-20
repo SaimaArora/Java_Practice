@@ -1,45 +1,52 @@
 class RangeFreqQuery {
 
-    Map<Integer, List<Integer>> freq;
+    Map<Integer, Integer>[] seg;
+    int[] arr;
     public RangeFreqQuery(int[] arr) {
-        freq = new HashMap<>();
-        for(int i = 0; i < arr.length; i++) {
-            freq.putIfAbsent(arr[i], new ArrayList<>());
-            freq.get(arr[i]).add(i);
+        seg = new HashMap[arr.length * 4];
+        this.arr = arr;
+        build(0, 0, arr.length - 1, seg, arr);
+    }
+
+    public void build(int ind, int low, int high, Map<Integer, Integer>[] seg, int[] arr) {
+        if (low == high) {
+            seg[ind] = new HashMap<>();
+            seg[ind].put(arr[low], 1);
+            return;
+        }
+        int mid = (low + high) / 2;
+        build(2*ind+1, low, mid, seg, arr);
+        build(2 * ind + 2, mid + 1, high, seg, arr);
+        seg[ind] = new HashMap<>();
+        merge(seg[ind], seg[2*ind+1]);
+        merge(seg[ind], seg[2*ind+2]);
+    }
+
+    public void merge(Map<Integer, Integer> parent, Map<Integer, Integer> child) {
+        for(Map.Entry<Integer, Integer> m  : child.entrySet()) {
+            parent.put(m.getKey(), m.getValue() + parent.getOrDefault(m.getKey(), 0));
         }
     }
-    private int checkUpper(int limit, List<Integer> curr) {
-        int l = 0, r = curr.size();
-        while(l < r) {
-            int mid = (l + r) / 2;
-            if(curr.get(mid) > limit) {
-                r = mid;
-            }
-            else {
-                l = mid + 1;
-            }
-        }
-        return l;
-    }
-    private int checkLower(int limit, List<Integer> curr) {
-        int l = 0, r = curr.size();
-        while(l < r) {
-            int mid = (l + r) / 2;
-            if(curr.get(mid) >= limit) {
-                r = mid;
-            }
-            else {
-                l = mid + 1;
-            }
-        }
-        return l;
-    }
+    
     public int query(int left, int right, int value) {
-        if (!freq.containsKey(value)) return 0;
-        List<Integer> curr = freq.get(value);
-        int l = checkLower(left, curr);
-        int r = checkUpper(right, curr);
-        return r - l;
+        return query(0, 0, arr.length - 1, left, right, value);
+    }
+    private int query(int ind, int low, int high, int left, int right, int value) {
+        //no overlap l r low high or low high l r
+        if (low > right || high < left) {
+            return 0;
+        }
+        
+        //complete overlap l low high r
+        if (low>= left && high <= right) {
+            return seg[ind].getOrDefault(value, 0);
+        }
+
+        //partial low l  r high
+        int mid = (low+high)/2;
+        int l = query(2*ind+1, low, mid, left, right, value);
+        int r = query(2*ind+2, mid+1, high, left, right, value);
+        return l+r;
     }
 }
 
