@@ -1,0 +1,23 @@
+class Solution {
+    public int recursion(int i, int j, int[] cuts, int[][] memo) {
+        if(j - 1 <= i) return 0;
+        if(memo[i][j] != -1) return memo[i][j];
+        int minCost = Integer.MAX_VALUE;
+        for(int k = i+1; k < j; k++) {
+            int steps =  (cuts[j] - cuts[i]) + recursion(i, k, cuts, memo) + recursion(k, j, cuts, memo);
+            minCost = Math.min(minCost, steps);
+        }
+        return memo[i][j] = minCost;
+    }
+    public int minCost(int n, int[] cuts) {
+        int m = cuts.length, ind = 0;
+        int[] arr = new int[m+2];
+        arr[ind++] = 0;
+        for(int s : cuts) arr[ind++] = s;
+        arr[ind] = n; 
+        Arrays.sort(arr);
+        int[][] memo = new int[m+3][m+3];
+        for(int[] i : memo) Arrays.fill(i, -1);
+        return recursion(0, arr.length - 1, arr, memo);
+    }
+}
