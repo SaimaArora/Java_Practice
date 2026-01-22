@@ -1,0 +1,32 @@
+class Solution {
+
+    private boolean isValid (int i, int j, int[][] grid, boolean[][] visited) {
+        return i>=0 && i < grid.length && j >= 0 && j < grid[0].length && grid[i][j] == 1 && !visited[i][j];
+    }
+    private int dfs(int i, int j, int[][] grid, boolean[][] visited) {
+        visited[i][j] = true;
+        int[] rows = {0, 1, -1, 0};
+        int[] cols = {1, 0, 0, -1};
+        int area = 1;
+        for(int k = 0; k < 4; k++) {
+            int newRow = i + rows[k], newCol = j + cols[k];
+            if(isValid(newRow, newCol, grid, visited)) {
+                area += dfs(newRow, newCol, grid, visited);
+            }
+        }
+        return area;
+    }
+    public int maxAreaOfIsland(int[][] grid) {
+        int n = grid.length, m = grid[0].length;
+        boolean[][] visited = new boolean[n][m];
+        int max = 0;
+        for(int i = 0; i < n ; i++) {
+            for (int j = 0; j < m; j++) {
+                if(!visited[i][j] && grid[i][j] == 1) {
+                    max = Math.max(max, dfs(i, j, grid, visited));
+                }
+            }
+        }
+        return max;
+    }
+}
