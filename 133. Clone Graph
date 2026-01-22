@@ -19,7 +19,7 @@ class Node {
 */
 
 class Solution {
-    Node[] visited = new Node[100];
+    Node[] visited = new Node[100+1];
     private Node dfs(Node node) {
         if(visited[node.val] != null) return visited[node.val];
         Node curr = new Node(node.val);
