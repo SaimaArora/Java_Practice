@@ -1,0 +1,75 @@
+class Solution {
+    int n;
+    int[] tree;
+    private int findSmallestGreater(long num, ArrayList<Long> ranks) {
+        int st = 0, end = ranks.size() - 1, ans = -1;
+        while(st <= end) {
+            int mid = (st+end)/2;
+            if (ranks.get(mid) > num) {
+                ans = mid;
+                end = mid - 1;
+            }
+            else{
+                st = mid+1;
+            }
+        }
+        return ans;
+    }
+    private int query(int node, int low, int high, int left, int right) {
+        if(low > right || high < left) return 0;
+        if(low >= left && high <= right) {
+            return tree[node];
+        }
+        int mid = (low+high)/2;
+        int l = query(2*node+1, low, mid, left, right);
+        int r = query(2*node+2, mid+1, high, left, right);
+        return l + r;
+    }
+    public int reversePairs(int[] nums) {
+        TreeSet<Long> ts = new TreeSet<>();
+        for(int num : nums) {
+            ts.add((long)num);
+        }
+        ArrayList<Long> ranks = new ArrayList<>(ts);
+        n = ranks.size();
+        tree = new int[n*4];
+        int count = 0;
+        for(int i = 0; i < nums.length; i++) {
+            long num = (long)nums[i];
+            int left = findSmallestGreater(2*num, ranks);
+            if (left != -1) {
+                count+=query(0, 0, n-1, left, n -1);
+            }
+            int rankInd = getRank(ranks, num);
+            update(0, 0, n -1, rankInd, 1);
+        }
+        return count;
+    }
+    private void update(int node, int low, int high, int pos, int val) {
+        if (low == high) {
+            tree[node] += val;
+            return;
+        }
+        int mid = (low+high)/2;
+        if(pos <= mid) {
+            update(2*node+1, low, mid, pos, val);
+        } else {
+            update(2*node + 2, mid+1, high, pos, val);
+        }
+        tree[node] = tree[2*node+1] +tree[2*node+2];
+    }
+    private int getRank(ArrayList<Long> ranks, long num) {
+        int st = 0, end = ranks.size() - 1;
+        while(st <= end) {
+            int mid = (st+end) / 2;
+            if (ranks.get(mid) == num) {
+                return mid;
+            }
+            else if (ranks.get(mid) < num) {
+                st = mid + 1;
+            }
+            else end = mid - 1;
+        }
+        return -1;
+    }
+}
