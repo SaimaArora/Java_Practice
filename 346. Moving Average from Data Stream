@@ -1,0 +1,38 @@
+import java.util.LinkedList;
+import java.util.Queue;
+class MovingAverage {
+
+    Queue<Integer> queue;
+    int windowSum, size;
+    public MovingAverage(int s) {
+        windowSum = 0;
+        size = s;
+        queue = new LinkedList<>();
+    }
+
+    public double next(int val) {
+        if(size == queue.size()){
+            int rem = queue.poll();
+            windowSum-=rem;
+        }
+        queue.offer(val);
+        windowSum+=val;
+        return (double)windowSum/queue.size();
+    }
+}
+public class Design {
+/**
+ * Your MovingAverage object will be instantiated and called as such:
+ * MovingAverage obj = new MovingAverage(size);
+ * double param_1 = obj.next(val);
+ */
+    public static void main(String[] args) {
+        MovingAverage obj = new MovingAverage(3);
+        System.out.println(obj.next(3));
+        System.out.println(obj.next(1));
+        System.out.println(obj.next(10));
+        System.out.println(obj.next(3));
+        System.out.println(obj.next(5));
+
+    }
+}
