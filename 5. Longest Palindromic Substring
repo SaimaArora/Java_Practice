@@ -1,0 +1,27 @@
+class Solution {
+    private boolean check(int i, int j, String s,Boolean[][] memo) {
+        if(i >= j) return true;
+        if (memo[i][j] != null) return memo[i][j];
+        if(s.charAt(i) == s.charAt(j)){
+            boolean prev = check(i+1, j -1, s, memo);
+            return memo[i][j] = prev;
+        }
+        return memo[i][j] = false;
+    }
+    public String longestPalindrome(String s) {
+        int maxLen = 0, st = 0, n = s.length();
+        Boolean[][] memo = new Boolean[n][n];
+        for(Boolean[] i : memo) Arrays.fill(i, null);
+        for (int i = 0; i < s.length() ; i++) {
+            for (int j = i; j < s.length(); j++) {
+                if(check(i, j, s, memo)) {
+                    if(j - i +1 > maxLen) {
+                        maxLen = j - i +1;
+                        st = i;
+                    }
+                }
+            }
+        }
+        return s.substring(st, st+maxLen);
+    }
+}
