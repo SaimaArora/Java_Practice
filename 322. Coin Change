@@ -1,37 +1,26 @@
 class Solution {
-
-    public int tabulation(int[] coins, int amount) {
-        int[] dp = new int[amount + 1];
-        Arrays.fill(dp, amount + 1);
-        dp[0] = 0;
-        for (int amt = 1; amt <= amount; amt++) {
-            for(int coin : coins) {
-                if(coin <= amt) {
-                    dp[amt] = Math.min(dp[amt], 1 + dp[amt - coin]);
-                }
+    public int recursion(int[] coins, int amt, int ind, int[][] dp) {
+        if(amt == 0) return 0;
+        if (ind == coins.length - 1) {
+            if (amt % coins[ind] == 0) {
+                return amt/coins[ind];
             }
+            return 1000000000;
         }
-        return dp[amount] > amount ? -1 : dp[amount];
+        if(dp[ind][amt] != -1) return dp[ind][amt];
+        int pick = 1000000000;
+        if(amt >= coins[ind]) pick = 1 + recursion(coins, amt - coins[ind], ind, dp);
+        int notPick = recursion(coins, amt, ind+1, dp);
+        return dp[ind][amt] = Math.min(pick, notPick);
     }
-
-    public int recursion(int[] coins, int amt, int[] memo) {
-        if(amt == 0) return memo[0] = 0;
-        int minAns = Integer.MAX_VALUE;
-        if(memo[amt] != -1) return memo[amt];
-        for(int i = 0; i < coins.length; i++) {
-            if(amt >= coins[i]) {
-                int sub = recursion(coins, amt - coins[i], memo);
-                if(sub != Integer.MAX_VALUE) minAns = Math.min(minAns, 1 + sub);
-            }
-        }
-        return memo[amt] = minAns;
-    }
-
     public int coinChange(int[] coins, int amount) {
-        // int[] memo = new int[amount+1];
-        // Arrays.fill(memo, -1);
-        // recursion(coins, amount, memo);
-        // return memo[amount] == Integer.MAX_VALUE ? -1: memo[amount];
-        return tabulation(coins, amount);
+        int n = coins.length;
+        int[][] dp = new int[n][amount+1];
+        for(int[] i : dp) {
+            Arrays.fill(i, -1);
+        }
+        int ans = recursion(coins, amount, 0, dp);
+        return  ans == 1000000000 ? -1 : ans;
+        
     }
 }
