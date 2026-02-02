@@ -1,0 +1,76 @@
+class Solution {
+    int size = 0, currSize = 0;
+    long currSum = 0l;
+    public long minimumCost(int[] nums, int k, int dist) {
+        size = k - 1;
+        PriorityQueue<Integer> left = new PriorityQueue<>((a, b)-> b - a);
+        PriorityQueue<Integer> right = new PriorityQueue<>((a, b) -> a - b);
+        Map<Integer, Integer> toRemove = new HashMap<>();
+        
+        for (int i = 1; i <= dist+1; i++) {
+            right.offer(nums[i]);
+        }
+        while (currSize < size) {
+            int num = right.poll();
+            left.offer(num);
+            currSum += num;
+            currSize++;
+        }
+        long minSum = (long)currSum;
+        for (int i = dist+2; i < nums.length; i++) {
+            int newNum = nums[i];
+            int oldNum = nums[i - dist - 1];
+            //remove
+            toRemove.put(oldNum, toRemove.getOrDefault(oldNum, 0) + 1);
+            if(!left.isEmpty() && oldNum <= left.peek()) {
+                currSum-= oldNum;
+                currSize--;
+            }
+            //add
+            if (newNum < left.peek() || left.isEmpty()) {
+                left.offer(newNum);
+                currSum +=newNum;
+                currSize++;
+            }
+            else {
+                right.offer(newNum);
+            }
+            rebalance(left, right, toRemove);
+            minSum = Math.min(minSum, currSum);
+        }
+
+        return nums[0] + minSum;
+    }
+    private void rebalance(PriorityQueue<Integer>left, PriorityQueue<Integer> right, Map<Integer, Integer> toRemove) {
+        while(!left.isEmpty() && toRemove.containsKey(left.peek())){
+            int num = left.poll();
+            if(toRemove.get(num) > 1)toRemove.put(num, toRemove.get(num) - 1);
+            else toRemove.remove(num);
+        } 
+        while(!right.isEmpty() && toRemove.containsKey(right.peek())) {
+            int num = right.poll();
+            if(toRemove.get(num) > 1)toRemove.put(num, toRemove.get(num) - 1);
+            else toRemove.remove(num);
+        }
+        while (currSize < size) {
+            int num = right.poll();
+            if(toRemove.containsKey(num)){
+                toRemove.put(num, toRemove.get(num) - 1);
+                continue;
+            } 
+            left.offer(num);
+            currSum+=num;
+            currSize++;
+        }
+        while(currSize > size) {
+            int num = left.poll();
+            if (toRemove.containsKey(num)) {
+                toRemove.put(num, toRemove.get(num) - 1);
+                continue;
+            }
+            right.offer(num);
+            currSum -= num;
+            currSize--;
+        }
+    }
+}
