@@ -1,47 +1,36 @@
 class Solution {
 
-    public void dfs(int[][] heights, int r, int c, int prev, boolean[][] reachable) {
-        int n = heights.length, m = heights[0].length;
-        if(r < 0 || c < 0 || r >= n || c >= m) return;
-        if (reachable[r][c]==true) return;
-        if(heights[r][c] < prev) return;
-        reachable[r][c] = true;
-        dfs(heights, r-1, c, heights[r][c], reachable);
-        dfs(heights, r, c-1, heights[r][c], reachable);
-        dfs(heights, r+1, c, heights[r][c], reachable);
-        dfs(heights, r, c+1, heights[r][c], reachable);
+    private void dfs(int r, int c, int prev, int[][] heights, boolean[][] visited) {
+        if(r < 0 || c < 0 || r >= heights.length || c >= heights[0].length || visited[r][c]) {
+            return;
+        }
+        if (heights[r][c] < prev) return;
+        visited[r][c] = true;
+        int[] rows = {0, 0, 1, -1};
+        int[] cols = {1, -1, 0, 0};
+        for (int i = 0; i < 4; i++) {
+            int nr = r + rows[i], nc = c + cols[i];
+            dfs(nr, nc, heights[r][c], heights, visited);
+        }
     }
-
     public List<List<Integer>> pacificAtlantic(int[][] heights) {
-        int n = heights.length, m = heights[0].length;
-        List<List<Integer>> ans = new ArrayList<>();
-        boolean[][] reach_pacific = new boolean[n][m];
-        boolean[][] reach_atlantic = new boolean[n][m];
-        Queue<int[]> can_reach = new LinkedList<>();
-        for (int r = 0; r < n; r++) {
-            for (int c = 0; c < m; c++) {
-                reach_pacific[r][c] = false;
-                reach_atlantic[r][c] = false;
+        int m = heights.length, n = heights[0].length;
+        boolean[][] pacific = new boolean[m][n];
+        boolean[][] atlantic = new boolean[m][n];
+        for(int i = 0; i < n; i++) {
+            dfs(0, i, Integer.MIN_VALUE, heights, pacific);
+            dfs(m - 1,  i, Integer.MIN_VALUE, heights, atlantic);
+        }
+        for (int j = 0; j < m; j++) {
+            dfs(j, 0, Integer.MIN_VALUE, heights, pacific);
+            dfs(j, n - 1, Integer.MIN_VALUE, heights, atlantic);
+        }
+        List<List<Integer>> result = new ArrayList<>();
+        for(int i = 0; i < m; i++){
+            for (int j = 0; j < n; j++) {
+                if(pacific[i][j] && atlantic[i][j]) result.add(Arrays.asList(i, j));
             }
         }
-        //top and bottom
-        for(int i = 0; i < m; i++) {
-            dfs(heights, 0, i, Integer.MIN_VALUE, reach_pacific);
-            dfs(heights, n-1, i, Integer.MIN_VALUE, reach_atlantic);
-        }
-        //for left and right
-        for (int j = 0; j < n; j++ ){
-            dfs(heights, j, 0, Integer.MIN_VALUE, reach_pacific);
-            dfs(heights, j, m-1, Integer.MIN_VALUE, reach_atlantic);
-        }
-        //find common
-        for(int r = 0; r < n; r++) {
-            for (int c = 0; c < m; c++) {
-                if(reach_pacific[r][c] && reach_atlantic[r][c]) {
-                    ans.add(Arrays.asList(r, c));
-                }
-            }
-        }
-        return ans;
+        return result;
     }
 }
