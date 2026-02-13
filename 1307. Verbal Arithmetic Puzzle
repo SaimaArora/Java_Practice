@@ -1,0 +1,71 @@
+class Solution {
+    int[] charToDigit = new int[26];
+    boolean[] isLeading = new boolean[26];
+    boolean[] digitUsed = new boolean[10];
+
+    private boolean solve(int row, int col, int sum, String[] words, String res) {
+        if(col == res.length()) {
+            return sum == 0;
+        }
+        if (row < words.length) {
+            int ind = words[row].length() - col - 1;
+            if(ind < 0) return solve(row+1, col, sum, words, res);
+            int charCode = words[row].charAt(ind) - 'A';
+            if(charToDigit[charCode] != -1) return solve(row+1, col, sum+charToDigit[charCode], words, res);
+            //char unassigned
+            for(int dig = 0; dig < 10; dig++) {
+                if(!digitUsed[dig]) {
+                    if (dig == 0 && isLeading[charCode]) continue;
+                    digitUsed[dig] = true;
+                    charToDigit[charCode] = dig;
+                    if (solve(row+1, col, sum + dig, words, res)) return true;
+                    digitUsed[dig] = false;
+                    charToDigit[charCode] = -1;
+                }
+            }
+            return false;
+        }
+        int tar = sum % 10, carry = sum / 10;
+        int resInd = res.length() - 1 - col;
+        int resCode = res.charAt(resInd) - 'A';
+        if (charToDigit[resCode] != -1) {
+            if (charToDigit[resCode] == tar) {
+                return solve(0, col+1,carry, words, res);
+            }
+            return false;
+        } 
+        if (digitUsed[tar]) return false;
+        if (tar == 0 && isLeading[resCode]) return false;
+
+        charToDigit[resCode] = tar;
+        digitUsed[tar] = true;
+        if(solve(0, col+1, carry, words, res)) return true;
+        charToDigit[resCode] = -1;
+        digitUsed[tar] = false;
+
+        return false;
+    }
+    public boolean isSolvable(String[] words, String result) {
+        Arrays.fill(charToDigit, -1);
+        Arrays.fill(digitUsed, false);
+        Arrays.fill(isLeading, false);
+        HashSet<Character> unique = new HashSet<>();
+        //if unique character more than 10
+        for(char ch : result.toCharArray()) {
+            unique.add(ch);
+        }
+        
+        for(String word : words) {
+            if (word.length() > result.length()) {
+                return false;
+            }
+            if(word.length() > 1) isLeading[word.charAt(0) - 'A'] = true;
+            for (char ch : word.toCharArray()) {
+                unique.add(ch);
+            }
+        }
+        if (result.length() > 1) isLeading[result.charAt(0) - 'A'] = true;
+        if(unique.size() > 10) return false;
+        return solve(0, 0, 0, words, result);
+    }
+}
