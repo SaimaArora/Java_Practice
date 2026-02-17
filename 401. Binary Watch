@@ -1,0 +1,26 @@
+class Solution {
+    public List<String> readBinaryWatch(int turnedOn) {
+        List<String> ans = new ArrayList<>();
+        for(int hr = 0; hr < 12; hr++) {
+            for (int min = 0; min <= 59; min++) {
+                int countHr = 0, countMin = 0, h = hr, m = min;
+                while(h != 0) {
+                    if((h&1) == 1)
+                    countHr++;
+                    h >>>= 1;
+                }
+                while(m != 0) {
+                    if((m&1) == 1)
+                    countMin++;
+                    m>>>=1;
+                }
+
+                int total = countHr+countMin;
+                if (total == turnedOn) {
+                    ans.add(hr + ":" + ((min < 10)?"0":"")+min);
+                }
+            }
+        }
+        return ans;
+    }
+}
