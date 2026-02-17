@@ -1,0 +1,25 @@
+class MyCalendarThree {
+
+    TreeMap<Integer, Integer> events;
+
+    public MyCalendarThree() {
+        events = new TreeMap<>();    
+    }
+    
+    public int book(int startTime, int endTime) {
+        int count = 0, maxIntersection = 0;
+        events.put(startTime, events.getOrDefault(startTime, 0) + 1);
+        events.put(endTime, events.getOrDefault(endTime, 0) - 1);
+        for(int time : events.values()) {
+            count+=time;
+            maxIntersection = Math.max(maxIntersection, count);
+        }
+        return maxIntersection;
+    }
+}
+
+/**
+ * Your MyCalendarThree object will be instantiated and called as such:
+ * MyCalendarThree obj = new MyCalendarThree();
+ * int param_1 = obj.book(startTime,endTime);
+ */
