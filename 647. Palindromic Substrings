@@ -1,0 +1,19 @@
+class Solution {
+    private boolean recursion(int i, int j, String s, Boolean[][] memo) {
+        if(i >= j) return true;
+        if(memo[i][j] != null) return memo[i][j];
+        return memo[i][j] = (s.charAt(i) == s.charAt(j)) && recursion(i+1, j - 1, s, memo);
+    }
+    public int countSubstrings(String s) {
+        int count = 0;
+        int n = s.length();
+        Boolean[][] memo = new Boolean[n][n];
+        for(Boolean[] arr: memo) Arrays.fill(arr, null);
+        for(int i = 0; i < n; i++) {
+            for(int j= i; j < n; j++) {
+                if(recursion(i, j, s, memo)) count++;
+            }
+        }
+        return count;
+    }
+}
