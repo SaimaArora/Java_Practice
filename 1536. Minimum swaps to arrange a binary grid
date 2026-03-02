@@ -1,0 +1,31 @@
+class Solution {
+    public int minSwaps(int[][] grid) {
+        int m = grid.length, n = grid[0].length, ind = 0;
+        int[] zeroes = new int[m];
+        for (int[] arr: grid) {
+            int count = 0;
+            for (int i = n - 1; i >= 0; i--) {
+                if(arr[i] == 1) break;
+                count++;
+            }
+            zeroes[ind++] = count;
+        }
+        int swaps = 0;
+        for (int i = 0; i < zeroes.length; i++) {
+            int need = n - 1 - i;
+            ind = -1;
+            for(int j = i; j < m; j++) {
+                if(zeroes[j] >= need){ ind = j; break;}
+            }
+            if(ind == -1) return -1;
+            swaps+=(ind - i);
+            int curr = ind, num = zeroes[ind];
+            while(curr > i) {
+                zeroes[curr] = zeroes[curr - 1];
+                curr--;
+            }
+            zeroes[i] = num;
+        }
+        return swaps;
+    }
+}
