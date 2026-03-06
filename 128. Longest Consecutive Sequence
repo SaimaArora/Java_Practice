@@ -1,0 +1,50 @@
+class Solution {
+    class DSU{
+        int[] parent;
+        int [] size;
+        int max;
+        DSU(int len) {
+            parent = new int[len];
+            size = new int[len];
+            for(int i = 0; i < len; i++) {
+                parent[i] = i;
+                size[i] = 1;
+            }
+            max = len>0?1:0;
+        }
+        public int find(int num) {
+            if(parent[num] == num) return num;
+            return parent[num] = find(parent[num]);
+        }
+        public void union(int a, int b) {
+            int para = find(a);
+            int parb = find(b);
+            if(para != parb) {
+                if(size[para] > size[parb]) {
+                    size[para]+=size[parb];
+                    parent[parb] = para;
+                } else {
+size[parb]+=size[para];
+                    parent[para] = parb;
+                }
+            }
+            max =Math.max(size[para], Math.max(size[parb], max));
+        }
+    }
+    public int longestConsecutive(int[] nums) {
+        HashMap<Integer, Integer> hm = new HashMap<>();
+        DSU dsu = new DSU(nums.length);
+
+        for(int i = 0; i < nums.length; i++) {
+            if(hm.containsKey(nums[i])) continue;
+            if(hm.containsKey(nums[i]- 1)) {
+                dsu.union(i, hm.get(nums[i] - 1));
+            }
+            if( hm.containsKey(nums[i]+1)) {
+                dsu.union(i, hm.get(nums[i]+1));
+            }
+            hm.put(nums[i], i);
+        }
+        return dsu.max;
+    }
+}
