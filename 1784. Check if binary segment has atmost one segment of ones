@@ -1,0 +1,15 @@
+class Solution {
+    public boolean checkOnesSegment(String s) {
+        boolean flag = false;
+        int i = 0, len = s.length();
+        while(i < len) {
+            if(flag == true && s.charAt(i) == '1') return false;
+            while( i < len && s.charAt(i) == '1'){
+                flag = true;
+                i++;
+            }
+            i++;
+        }
+        return true;
+    }
+}
