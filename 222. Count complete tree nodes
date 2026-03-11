@@ -1,13 +1,9 @@
 class Solution {
-    int count = 0;
-    private void count(TreeNode root) {
-        if(root == null) return;
-        count++;
-        count(root.left);
-        count(root.right);
+    private int count(TreeNode root) {
+        if(root == null) return 0;
+        return 1+ count(root.left)+count(root.right);
     }
     public int countNodes(TreeNode root) {
-        count(root);
-        return count;
+        return count(root);
     }
 }
