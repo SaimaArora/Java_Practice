@@ -1,0 +1,55 @@
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode() {}
+ *     TreeNode(int val) { this.val = val; }
+ *     TreeNode(int val, TreeNode left, TreeNode right) {
+ *         this.val = val;
+ *         this.left = left;
+ *         this.right = right;
+ *     }
+ * }
+ */
+class Solution {
+    class Node{
+        int r, c, val;
+        Node(int row, int col, int value) {
+            r = row;
+            c = col;
+            val = value;
+        }
+    }
+    private void dfs(TreeNode root, int row, int col, List<Node> list) {
+        if(root == null) return;
+        list.add(new Node(row, col, root.val));
+        dfs(root.left, row+1, col -1, list);
+        dfs(root.right, row+1, col+1, list);
+    }
+    public List<List<Integer>> verticalTraversal(TreeNode root) {
+        List<List<Integer>> result = new ArrayList<>();
+        List<Node> list = new ArrayList<>();
+        dfs(root, 0, 0, list);
+        list.sort((a, b)->{
+            if(a.c != b.c) return a.c - b.c;
+            else if(a.r != b.r) return a.r - b.r;
+            return a.val - b.val;
+        });
+        if(list.size()==0)return result;
+
+        List<Integer> colList = new ArrayList<>();
+        int currCol = list.get(0).c;
+        for(Node node : list) {
+            if(node.c != currCol) {
+                result.add(colList);
+                colList = new ArrayList<>();
+                currCol = node.c;
+            }
+            colList.add(node.val);
+        }
+        result.add(colList);
+        return result;
+    }
+}
