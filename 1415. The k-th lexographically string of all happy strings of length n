@@ -1,0 +1,26 @@
+class Solution {
+    String ans = "";
+    private boolean recursion(int prev, StringBuilder str,  int n, int k, List<String> list) {
+        if(str.length() == n){
+            list.add(new String(str));
+            if(list.size() == k){
+                ans = list.get(k - 1);
+                return true;
+            } 
+            return false;
+        }
+        char[] arr = {'a', 'b', 'c'};
+
+        for(int ind = 0; ind < 3; ind++) {
+            if(prev == ind) continue;
+            str.append(arr[ind]);
+            if(recursion(ind, str, n, k, list)) return true;
+            str.deleteCharAt(str.length() - 1);
+        }
+        return false;
+    } 
+    public String getHappyString(int n, int k) {
+        boolean res = recursion(-1, new StringBuilder(), n, k, new ArrayList<>());
+        return ans;
+    }
+}
