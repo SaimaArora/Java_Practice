@@ -1,0 +1,42 @@
+class Solution {
+    public void reverseOrder(int ind, int[][] height) {
+        int r = ind, st = 0,  end = height[0].length - 1;
+        while(st < end) {
+            int temp = height[r][st];
+            height[r][st] = height[r][end];
+            height[r][end] = temp;
+            st++; end--;
+        }
+    }
+    public int largestSubmatrix(int[][] matrix) {
+        int n = matrix.length, m = matrix[0].length;
+
+        int[][] height = new int[n][m];
+        for(int i = 0; i < m; i++) {
+            height[0][i] = matrix[0][i];
+        }
+        for(int i = 1; i < n; i++) {
+            for(int j = 0; j < m; j++) {
+                if(matrix[i][j] == 0) height[i][j] = 0;
+                else{
+                    height[i][j]+=height[i - 1][j]+1;
+                }
+            }
+        }
+        for(int[] arr: height) {
+            Arrays.sort(arr);
+        }
+        for(int i = 0; i < n; i++) {
+            reverseOrder(i, height);
+        }
+        int area = Integer.MIN_VALUE;
+        for(int i = 0; i < n; i++) {
+            for(int j = 0; j < m; j++) {
+                int hei = j+1;
+                area = Math.max(area, hei*height[i][j]);
+            }
+        }
+        return area;
+
+    }
+}
