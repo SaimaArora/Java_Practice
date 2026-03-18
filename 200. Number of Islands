@@ -1,0 +1,26 @@
+class Solution {
+    private void dfs(int i, int j, char[][] grid, boolean[][] visited) {
+        visited[i][j] = true;
+        int[] rows = {0, 0, 1, -1};
+        int[] cols = {1, -1, 0, 0};
+        for(int k = 0; k < 4; k++) {
+            int newr = rows[k] + i, newc = cols[k] + j;
+            if(newr >= 0 && newr < grid.length && newc >= 0 && newc < grid[0].length && grid[newr][newc] == '1' && !visited[newr][newc]) {
+                dfs(newr, newc, grid, visited);
+            }
+        }
+    }
+    public int numIslands(char[][] grid) {
+        int count = 0, n = grid.length, m = grid[0].length;
+        boolean[][] visited = new boolean[n][m];
+        for(int i = 0; i < n; i++) {
+            for(int j = 0; j < m; j++) {
+                if(grid[i][j] == '1' && !visited[i][j]) {
+                    dfs(i, j, grid, visited);
+                    count++;
+                }
+            }
+        }
+        return count;
+    }
+}
