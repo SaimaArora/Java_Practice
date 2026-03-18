@@ -1,0 +1,32 @@
+class Solution {
+    public void gameOfLife(int[][] grid) {
+        //2 -> live but then dead, 3->dead but then alive
+        int n = grid.length, m = grid[0].length;
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                int[] rows = {0, 1, -1, 0, 1, -1, 1, -1};
+                int[] cols = {1, 0, 0, -1, 1, -1, -1,1};
+                int count = 0;
+                for(int k = 0; k < 8; k++) {
+                    int newr = rows[k] + i, newc = cols[k] + j;
+                    if (newr >= 0 && newr < n && newc >= 0 && newc < m) {
+                        if(grid[newr][newc] == 2 || grid[newr][newc] == 1) count++;
+                    }
+                }
+                if(grid[i][j] == 1) {
+                    if(count > 3 || count < 2) {
+                        grid[i][j] = 2;
+                    }
+                } else if(count == 3) {
+                    grid[i][j] = 3;
+                }
+            }
+        }
+        for(int i = 0; i < n; i++) {
+            for(int j = 0; j < m; j++) {
+                if(grid[i][j] == 2) grid[i][j] = 0;
+                if (grid[i][j] == 3) grid[i][j] = 1;
+            }
+        }
+    }
+}
