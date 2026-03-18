@@ -1,0 +1,15 @@
+class Solution {
+    public List<String> summaryRanges(int[] nums) {
+        int ind = 0, n = nums.length;
+        List<String> res = new ArrayList<>();
+        while(ind < nums.length) {
+            int st = nums[ind];
+            while(ind < n - 1 && nums[ind+1] - nums[ind] == 1) ind++;
+            int end = nums[ind];
+            if(st != end) res.add(new String(st+""+"->"+""+end));
+            else res.add(new String(st+""));
+            ind++;
+        }
+        return res;
+    }
+}
