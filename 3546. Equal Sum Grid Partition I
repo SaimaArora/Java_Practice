@@ -1,35 +1,29 @@
 class Solution {
     public boolean canPartitionGrid(int[][] grid) {
         int n =grid.length, m = grid[0].length;
-        long[] sums = new long[n];
+        long total = 0l;
         for(int r = 0; r < n; r++) {
-            long sum = 0;
             for(int j = 0; j < m; j++ ) {
-                sum+=(long)grid[r][j];
+                total+=(long)grid[r][j];
             }
-            sums[r] = sum;
         }
-        for(int r = 1; r < n; r++) {
-            sums[r] += sums[r - 1];
-        }
-        for(int r = 0; r < n - 1; r++) {
-            long remain = sums[n - 1] - sums[r];
-            if(sums[r] == remain) return true;
-        }
-        sums = new long[m];
-        for (int c = 0; c < m; c++) {
-            long sum = 0;
-            for(int r = 0;r < n; r++) {
-                sum+=(long)grid[r][c];
+        if(total %2 != 0) return false;
+        long target = total/2;
+        long sum = 0l;
+        for(int i = 0; i < n; i++) {
+            for(int j = 0; j < m; j++) {
+                sum+=grid[i][j];
             }
-            sums[c] = sum;
+            if(sum == target) return true;
+            if(sum > target) break;
         }
-        for(int c = 1;c < m; c++) {
-            sums[c] += sums[c - 1];
-        }
-        for (int c = 0; c < m - 1; c++) {
-            long remain = sums[m - 1] - sums[c];
-            if(sums[c] == remain) return true;
+        sum = 0;
+        for(int j = 0; j < m; j++) {
+            for(int i = 0; i < n; i++) {
+                sum+=grid[i][j];
+            }
+            if(sum == target) return true;
+            if(sum > target) break;
         }
         return false;
     }
