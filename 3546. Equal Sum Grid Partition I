@@ -1,0 +1,36 @@
+class Solution {
+    public boolean canPartitionGrid(int[][] grid) {
+        int n =grid.length, m = grid[0].length;
+        long[] sums = new long[n];
+        for(int r = 0; r < n; r++) {
+            long sum = 0;
+            for(int j = 0; j < m; j++ ) {
+                sum+=(long)grid[r][j];
+            }
+            sums[r] = sum;
+        }
+        for(int r = 1; r < n; r++) {
+            sums[r] += sums[r - 1];
+        }
+        for(int r = 0; r < n - 1; r++) {
+            long remain = sums[n - 1] - sums[r];
+            if(sums[r] == remain) return true;
+        }
+        sums = new long[m];
+        for (int c = 0; c < m; c++) {
+            long sum = 0;
+            for(int r = 0;r < n; r++) {
+                sum+=(long)grid[r][c];
+            }
+            sums[c] = sum;
+        }
+        for(int c = 1;c < m; c++) {
+            sums[c] += sums[c - 1];
+        }
+        for (int c = 0; c < m - 1; c++) {
+            long remain = sums[m - 1] - sums[c];
+            if(sums[c] == remain) return true;
+        }
+        return false;
+    }
+}
