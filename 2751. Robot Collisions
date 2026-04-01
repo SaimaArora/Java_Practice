@@ -1,0 +1,39 @@
+class Solution {
+    public List<Integer> survivedRobotsHealths(int[] positions, int[] health, String dir) {
+        int n = positions.length;
+        Integer[] indices = new Integer[n];
+        for(int i = 0; i < n; i++) {
+            indices[i] = i;
+        }
+        Arrays.sort(indices, (a, b)-> positions[a] - positions[b]);
+        Deque<Integer> war = new ArrayDeque();
+        for(int i = 0; i <indices.length; i++) {
+            int ele = indices[i];
+            if(dir.charAt(ele) == 'R') {
+                war.push(ele);
+            } else {
+                while(!war.isEmpty() && health[ele] > 0){
+                    int top = war.peek();
+                    if(health[ele] < health[top]) {
+                        health[ele] = 0;
+                        health[top] -= 1;
+                    } else if(health[ele] > health[top]) {
+                        health[top] = 0;
+                        war.pop();
+                        health[ele] -= 1;
+                    } else {
+                        health[ele] = 0;
+                        health[top] = 0;
+                        war.pop();
+                    }
+                }
+            }
+        }
+        List<Integer> res = new ArrayList<>();
+        for(int curr: health) {
+            if(curr > 0) res.add(curr);
+        }
+        return res;
+
+    }
+}
