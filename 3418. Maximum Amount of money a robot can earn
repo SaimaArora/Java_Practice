@@ -1,0 +1,34 @@
+class Solution {
+    static int inf = -1000000000;
+    private int recursion(int i, int j, int k, int[][] coins, int memo[][][]) {
+        if(i == coins.length - 1 && j == coins[0].length - 1){
+            if(coins[i][j] >= 0) return coins[i][j];
+            return (k < 2) ? 0 : coins[i][j];
+         }
+        if(i >= coins.length || j >= coins[0].length || i < 0 || j < 0) return inf;
+        int res = inf;
+        if(memo[i][j][k] != Integer.MIN_VALUE) return memo[i][j][k];
+        if(coins[i][j] >= 0) {
+            int right = recursion(i, j+1, k, coins, memo) + coins[i][j];
+            int down = recursion(i+1, j, k, coins, memo)+coins[i][j];
+            res = Math.max(right, down);
+        } else{
+            int take = Math.max(coins[i][j] +recursion(i, j+1, k, coins, memo) ,coins[i][j]+ recursion(i+1, j, k, coins, memo));
+            int ignore = inf;
+            if(k < 2) ignore = Math.max(recursion(i+1, j, k+1, coins, memo), recursion(i, j+1, k+1, coins, memo));
+            res = Math.max(take, ignore);
+        }
+        return memo[i][j][k] = res;
+
+    }
+    public int maximumAmount(int[][] coins) {
+        int n = coins.length, m = coins[0].length;
+        int[][][] memo = new int[n][m][3];
+        for(int[][] arr : memo) {
+            for(int[] ar : arr) {
+                Arrays.fill(ar, Integer.MIN_VALUE);
+            }
+        }
+        return recursion(0, 0, 0, coins, memo);
+    }
+}
