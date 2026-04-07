@@ -1,0 +1,45 @@
+class Robot {
+    int w, h, p;
+    int curr = 0;
+    boolean hasMoved;
+
+    public Robot(int width, int height) {
+        this.w = width;
+        this.h = height;
+        this.p = 2*(w - 1) + 2*(h - 1);
+        hasMoved = false;
+    }
+    
+    public void step(int num) {
+        hasMoved = true;
+        curr = (curr+num)%p;
+    }
+    
+    public int[] getPos() {
+        if(curr == 0) return new int[]{0, 0};
+        if (curr < w) {
+            return new int[]{curr, 0};
+        } 
+        else if(curr < w + h - 1) {
+            return new int[]{w - 1, curr - (w - 1)};
+        }
+         else if(curr < 2*w+h-2) return new int[]{w - 1 - (curr - (w + h - 2)), h - 1};
+         else return new int[]{0, h - 1 - (curr - (2 * w + h - 3))};
+    }
+    
+    public String getDir() {
+        if(curr==0 && hasMoved) return "South";
+        if(curr < w) return "East";
+        else if(curr < w+h-1) return "North";
+        else if(curr < 2*w+h-2) return "West";
+        return "South";
+    }
+}
+
+/**
+ * Your Robot object will be instantiated and called as such:
+ * Robot obj = new Robot(width, height);
+ * obj.step(num);
+ * int[] param_2 = obj.getPos();
+ * String param_3 = obj.getDir();
+ */
