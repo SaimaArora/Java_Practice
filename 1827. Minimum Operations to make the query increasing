@@ -1,0 +1,14 @@
+class Solution {
+    public int minOperations(int[] nums) {
+        int n = nums.length, ans = 0;
+        for (int i = 1; i < n; i++) {
+            if (nums[i] <= nums[i - 1]) {
+                int target = nums[i - 1]+1;
+                int left = target - nums[i];
+                ans+=left;
+                nums[i] = target;
+            }
+        }
+        return ans;
+    }
+}
