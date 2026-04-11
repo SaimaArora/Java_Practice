@@ -1,0 +1,32 @@
+class Solution {
+    private boolean withinBounds(int r, int c, int[][] grid) {
+        return r>= 0&& c>= 0&& r < grid.length && c < grid[0].length; 
+    }
+    public int shortestPath(int[][] grid, int k) {
+        int n = grid.length, m = grid[0].length;
+        Queue<int[]> q = new LinkedList<>();
+        int[][] visited = new int[n][m];
+        for(int[]r:visited) Arrays.fill(r, -1);
+        int[] rows = {0, 1,-1, 0};
+        int[] cols = {1, 0, 0, -1};
+        q.offer(new int[]{0, 0, k, 0});
+        visited[0][0] = k;
+        while(!q.isEmpty()) {
+            int[] curr = q.poll();
+            int r = curr[0], c = curr[1], rem = curr[2], dist = curr[3];
+            if(r == n - 1&& c == m - 1) return dist;
+            for(int i = 0; i < 4; i++) {
+                int newr = rows[i]+r, newc = cols[i]+c;
+                if(withinBounds(newr, newc, grid)) {
+                    int newk = rem-grid[newr][newc];
+                    if(newk >= 0 && visited[newr][newc] < newk) {
+                        q.offer(new int[]{newr, newc, newk, dist+1});
+                        visited[newr][newc] = newk;
+                    }
+                }
+            }
+        }
+        return -1;
+
+    }
+}
