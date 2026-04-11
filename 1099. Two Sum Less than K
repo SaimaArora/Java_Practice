@@ -1,0 +1,14 @@
+    public int twoSumLessThanK(int[] nums, int k) {
+        Arrays.sort(nums);
+        int l = 0, r = nums.length - 1, maxSum = Integer.MIN_VALUE;
+        while(l < r) {
+            int sum = nums[l] + nums[r];
+            if(sum < k) {
+                maxSum = Math.max(maxSum, sum);
+                l++;
+            } else {
+                r--;
+            }
+        }
+        return maxSum;
+    }
