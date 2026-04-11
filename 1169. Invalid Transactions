@@ -1,0 +1,45 @@
+class Solution {
+    class Trans{
+        int time, amount, ind;
+        String name, city;
+        Trans(String name, int time, int amount, String city, int ind) {
+            this.name = name;
+            this.time = time;
+            this.amount = amount;
+            this.city = city;
+            this.ind = ind;
+        }
+    }
+    public List<String> invalidTransactions(String[] transactions) {
+        int n = transactions.length;
+        boolean[] invalid = new boolean[n];
+        HashMap<String, List<Trans>> map = new HashMap<>();
+        for(int i = 0; i < n; i++) {
+            String[] t = transactions[i].split(",");
+            if(!map.containsKey(t[0])) {
+                map.put(t[0], new ArrayList());
+            }
+            Trans obj = new Trans(t[0], Integer.parseInt(t[1]), Integer.parseInt(t[2]), t[3], i);
+            map.get(t[0]).add(obj);
+            if(Integer.parseInt(t[2]) > 1000) invalid[i] = true;
+        }
+        for(String pers: map.keySet()) {
+            List<Trans> curr = map.get(pers);
+            for(int i = 0; i < curr.size(); i++) {
+                for(int j = i+1; j < curr.size(); j++) {
+                    Trans t1 = curr.get(i);
+                    Trans t2 = curr.get(j);
+                    if(!t1.city.equals(t2.city) && Math.abs(t1.time - t2.time) <= 60) {
+                        invalid[t1.ind] = true;
+                        invalid[t2.ind] = true;
+                    }
+                }
+            }
+        }
+        List<String> res = new ArrayList();
+        for(int i = 0; i < n; i++) {
+            if(invalid[i]) res.add(transactions[i]);
+        }
+        return res;
+    }
+}
