@@ -1,22 +1,28 @@
 class Solution {
     public int minimumDistance(int[] nums) {
+        HashMap<Integer, int[]> hm = new HashMap<>();
         int n = nums.length;
-        HashMap<Integer, List<Integer>> hm = new HashMap<>();
-        for (int i = 0; i < n; i++) {
-            if(!hm.containsKey(nums[i])) hm.put(nums[i], new ArrayList<>());
-            hm.get(nums[i]).add(i);
-        }
         int minDist = Integer.MAX_VALUE;
         for(int i = 0; i < n; i++) {
-            if(hm.getOrDefault(nums[i], new ArrayList()).size() >= 3) {
-                List<Integer> ind = hm.get(nums[i]);
-                int x = ind.get(0), y = ind.get(1), z = ind.get(2);
-                int dist = Math.abs(x - y)+Math.abs(y - z)+Math.abs(z - x);
-                if(minDist > dist) minDist = dist;
-                ind.remove(0);
-                hm.put(nums[i], ind);
+            if(!hm.containsKey(nums[i])) {
+                hm.put(nums[i], new int[]{i, -1, 1});
+            } else {
+                int[] curr = hm.get(nums[i]);
+                curr[2]++; //count increased
+                if(curr[2] == 2) {
+                    curr[1] = i;
+                    
+                } else if(curr[2] >= 3) {
+                    int x = curr[0], y = curr[1], z = i;
+                    int dist = 2*(z - x);
+                    minDist = Math.min(minDist, dist);
+                    curr[0] = curr[1];
+                    curr[1] = i;
+                    curr[2]--;
+                }
+                hm.put(nums[i], curr);
             }
         }
-        return minDist == Integer.MAX_VALUE ? -1:minDist;
+        return minDist == Integer.MAX_VALUE?-1:minDist;
     }
 }
