@@ -1,0 +1,25 @@
+    //return the number of islands without repeated shapes
+    public int distinctIslands(int[][] grid) {
+        Set<String> set = new HashSet<>();
+        int n = grid.length, m = grid[0].length;
+        for(int r = 0;r < n; r++) {
+            for(int c= 0;c < m; c++) {
+                if(grid[r][c] == 1) {
+                    StringBuilder path = new StringBuilder();
+                    dfsDistinctIslands(r, c, "s", path, grid);
+                    set.add(path.toString());
+                }
+            }
+        }
+        return set.size();
+    }
+    private void dfsDistinctIslands(int r, int c, String dir, StringBuilder path, int[][] grid) {
+        if(r< 0 || c < 0 || r>= grid.length || c>= grid[0].length || grid[r][c] == 0) return;
+        grid[r][c] = 0;
+        path.append(dir);
+        dfsDistinctIslands(r, c+1,"r", path, grid);
+        dfsDistinctIslands(r+1, c,"d", path, grid);
+        dfsDistinctIslands(r, c-1, "l", path, grid);
+        dfsDistinctIslands(r-1, c, "u", path, grid);
+        path.append("b");
+    }
