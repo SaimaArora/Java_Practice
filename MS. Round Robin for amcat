@@ -1,0 +1,53 @@
+
+    //round robin - amcat
+    public void roundRobin(int[] at, int[] bt, int tq) {
+        int n = at.length, completed = 0;
+        Queue<Integer> q = new LinkedList<>();
+        int time = 0;
+        boolean[] inQueue = new boolean[n];
+        int[] remain = bt.clone();
+        int[] ct = new int[n];
+        int[] tat = new int[n];
+        int[] wt = new int[n];
+        for(int i = 0; i < n; i++) {
+            if(at[i] <= time) {
+                q.offer(i);
+                inQueue[i] = true;
+            }
+        }
+        //all processes are completed
+        while(completed < n) {
+            //no process in queue
+            if(q.isEmpty()) {
+                time++;
+                for(int i = 0; i < n; i++) {
+                    if(at[i] <= time && !inQueue[i]) {
+                        q.offer(i);
+                        inQueue[i] = true;
+                    }
+                }
+                continue;
+            }
+            //take process from queue
+            int curr = q.poll();
+            int minTime = Math.min(bt[curr], tq); //calc time to consume process
+            remain[curr]-=minTime;
+            time+=minTime;
+            //check if new process comes during it
+            for(int i = 0; i < n; i++) {
+                if(at[i] <= time && !inQueue[i] && remain[i] > 0) {
+                    q.offer(i);
+                    inQueue[i] = true;
+                }
+            }
+            //if process not finished
+            if(remain[curr] > 0) {
+                q.offer(curr);
+            } else { //when finished, calculate the stats
+                completed++;
+                ct[curr] = time;
+                tat[curr] = ct[curr] - at[curr];
+                wt[curr] = tat[curr] - bt[curr];
+            }
+        }
+    }
