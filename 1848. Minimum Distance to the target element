@@ -1,0 +1,17 @@
+class Solution {
+    public int getMinDistance(int[] nums, int target, int start) {
+        int l = 0, n= nums.length, r = n - 1, minLen = n;
+        while(l<=r) {
+            if(nums[l] == target) {
+                minLen = Math.min(Math.abs(start- l), minLen);
+                l++;
+            } else if(nums[r] == target) {
+                minLen = Math.min(Math.abs(start- r), minLen);
+                r--;
+            } else {
+                r--;l++;
+            }
+        }
+        return minLen;
+    }
+}
