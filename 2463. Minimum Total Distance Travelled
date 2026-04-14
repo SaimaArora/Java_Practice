@@ -1,0 +1,28 @@
+class Solution {
+    long inf = (long)1e15;
+    public long recursion(int roboInd, int factInd, List<Integer> robot, int[][] factory, long[][] memo) {
+        if(roboInd >= robot.size()) return 0;
+        if(factInd ==factory.length) return inf;
+        if(memo[roboInd][factInd] != -1) return memo[roboInd][factInd];
+        long notTake = recursion(roboInd, factInd+1, robot, factory, memo);
+        long take = 0;
+        for(int i = 0;i<factory[factInd][1]; i++) {
+            int next = i+roboInd;
+            if(next>= robot.size()) break;
+            take+= Math.abs((long)robot.get(next) - factory[factInd][0]);
+            long nextDist = recursion(next+1, factInd+1, robot, factory, memo);
+            if(nextDist != inf) {
+                notTake = Math.min(notTake, take+nextDist);
+            }
+        }
+        return memo[roboInd][factInd] = notTake;
+    }
+    public long minimumTotalDistance(List<Integer> robot, int[][] factory) {
+        int n = robot.size();
+        Collections.sort(robot);
+        Arrays.sort(factory, (a,b)->a[0] - b[0]);
+        long[][] memo = new long[n][factory.length];
+        for(long[] r:memo) Arrays.fill(r, -1);
+        return recursion(0, 0, robot, factory, memo);
+    }
+}
