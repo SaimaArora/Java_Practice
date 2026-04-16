@@ -1,0 +1,44 @@
+class Solution {
+    public int binarySearch(int ind, List<Integer> nums) {
+        int low = 0, high = nums.size() - 1;
+        while(low <= high) {
+            int mid = low+(high - low) /2;
+            if(nums.get(mid) == ind) return mid;
+            else if(nums.get(mid) > ind) high = mid - 1;
+            else low = mid+1;
+        }
+        return -1;
+    }
+    public List<Integer> solveQueries(int[] nums, int[] queries) {
+        List<Integer> res = new ArrayList<>();
+        int n = nums.length;
+        HashMap<Integer, List<Integer>> map = new HashMap<>();
+        for(int i = 0; i < n;i++) {
+            if(!map.containsKey(nums[i])) map.put(nums[i], new ArrayList<>());
+            map.get(nums[i]).add(i);
+        }
+        for(int i = 0; i < queries.length; i++) {
+            int ele = queries[i];
+            List<Integer> curr = map.get(nums[ele]);
+            int ind = binarySearch(ele, curr);
+            int len = curr.size();
+            if(len <= 1){
+                res.add(-1);
+                continue;
+            }
+            else if (ind != -1) {
+                int smaller = (ind +1) %len;
+                int greater = (ind - 1+len )%len;
+                int d1 = getDist(curr.get(smaller), ele, n);
+                int d2 = getDist(curr.get(greater), ele, n);
+                res.add(Math.min(d1, d2));
+            }
+        }
+        return res;
+
+    }
+    private int getDist(int i, int j, int n) {
+        int a = Math.abs(i - j);
+        return Math.min(a, n - a);
+    }
+}
